@@ -393,7 +393,7 @@ module mt48lc4m32b2
     parameter act  = 4'd5;
     parameter pre  = 4'd6;
     parameter mrs  = 4'd7;
-    parameter ref  = 4'd8;
+    parameter ref1  = 4'd8;
 
     reg [3:0] command = desl;
 
@@ -1174,7 +1174,7 @@ module mt48lc4m32b2
             else if (~RASNeg_ipd && CASNeg_ipd && ~WENeg_ipd)
                 command = pre;
             else if (~RASNeg_ipd && ~CASNeg_ipd && WENeg_ipd)
-                command = ref;
+                command = ref1;
             else if (~RASNeg_ipd && ~CASNeg_ipd && ~WENeg_ipd)
                 command = mrs;
 
@@ -1293,7 +1293,7 @@ module mt48lc4m32b2
                             statebank[bank] = mode_set;
                         end
                     end
-                    else if (command == ref)
+                    else if (command == ref1)
                     begin
                         if (statebank[0] == idle && statebank[1] == idle &&
                             statebank[2] == idle && statebank[3] == idle)
@@ -1927,11 +1927,11 @@ module mt48lc4m32b2
     reg TRCD_In , TRP_In , TWR_In;
     wire TRC_Out, TRCAR_Out, TRCD_Out, TRP_Out, TWR_Out;
 
-    BUFFER    BUF_TRC    (TRC_Out  , TRC_In);
-    BUFFER    BUF_TRCAR  (TRCAR_Out, TRCAR_In);
-    BUFFER    BUF_TRCD   (TRCD_Out , TRCD_In);
-    BUFFER    BUF_TRP    (TRP_Out  , TRP_In);
-    BUFFER    BUF_TWR    (TWR_Out  , TWR_In);
+    BUFFER_2    BUF_TRC    (TRC_Out  , TRC_In);
+    BUFFER_2    BUF_TRCAR  (TRCAR_Out, TRCAR_In);
+    BUFFER_2    BUF_TRCD   (TRCD_Out , TRCD_In);
+    BUFFER_2    BUF_TRP    (TRP_Out  , TRP_In);
+    BUFFER_2    BUF_TWR    (TWR_Out  , TWR_In);
 
     initial
     begin
@@ -1969,7 +1969,7 @@ module mt48lc4m32b2
 
 endmodule
 
-module BUFFER (OUT,IN);
+module BUFFER_2 (OUT,IN);
     input IN;
     output OUT;
         buf (OUT, IN);
