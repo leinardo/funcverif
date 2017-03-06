@@ -1,15 +1,15 @@
 //////////////////////////////////////////////////////////////////////////////////
-// Company:				ITCR
-// Engineers:			Sergio Arriola
-//						Reinaldo Castro
-//						Jaime Mora
-//						Javier Pérez 
+// Company:				  ITCR
+// Engineers:			  Sergio Arriola
+//						      Reinaldo Castro
+//						      Jaime Mora
+//						      Javier Pérez 
 // 						
-// Create Date:    		03/03/2017 
+// Create Date:    	03/03/2017 
 // Design Name: 		Testing Enviroment SDRAM Controler 
 // Module Name:			Interface 
 // Project Name: 		SDRAM Controler
-// Target Devices:		None
+// Target Devices:	None
 // Tool versions:		VCS K-2015.09-SP2-3
 // Description: 		
 //
@@ -22,18 +22,18 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 interface interface_sdrc (
-    // Global Variables
-    input logic [1:0] cfg_sdr_width,
-	input logic [1:0] cfg_colbits,
+  // Global Variables
+  input logic [1:0] cfg_sdr_width,
+  input logic [1:0] cfg_colbits,
 
-    // WB bus
-    input logic wb_rst,
-    input logic wb_clk,
+  // WB bus
+  input logic wb_rst,
+  input logic wb_clk,
                     
                 
-	// Interface to SDRAMs
-    input logic	sdram_clk,
-	input logic	sdram_resetn);
+  // Interface to SDRAMs
+  input logic	sdram_clk,
+  input logic	sdram_resetn);
 
 	//-----------
 	// Parameters
@@ -50,28 +50,28 @@ interface interface_sdrc (
 	//--------------------------------------
 	// Declaring Signals Wish Bone Interface
 	//--------------------------------------
-	logic				wb_stb;
-	logic				wb_ack;
-    logic [APP_AW-1:0] 	wb_addr;
-    logic				wb_we;
-    logic [dw-1:0] 		wb_dat;
-    logic [dw/8-1:0] 	wb_sel;
-    logic [dw-1:0] 		wb_dat;
-    logic				wb_cyc;
-    logic [2:0]			wb_cti; 
+  logic	              wb_stb;
+  logic	              wb_ack;
+  logic [APP_AW-1:0] 	wb_addr;
+  logic	              wb_we;
+  logic [dw-1:0] 		  wb_dati;
+  logic [dw/8-1:0] 	  wb_sel;
+  logic [dw-1:0] 		  wb_dato;
+  logic	              wb_cyc;
+  logic [2:0]			    wb_cti; 
 
 
-    //--------------------
+  //--------------------
 	// Interface to SDRAMs
 	//--------------------
-	logic				sdr_cke             ; // SDRAM CKE
-	logic 				sdr_cs_n            ; // SDRAM Chip Select
-	logic				sdr_ras_n           ; // SDRAM ras
-	logic				sdr_cas_n           ; // SDRAM cas
-	logic				sdr_we_n            ; // SDRAM write enable
+	logic	              sdr_cke             ; // SDRAM CKE
+	logic               sdr_cs_n            ; // SDRAM Chip Select
+	logic	              sdr_ras_n           ; // SDRAM ras
+	logic	              sdr_cas_n           ; // SDRAM cas
+	logic	              sdr_we_n            ; // SDRAM write enable
 	logic [SDR_BW-1:0]	sdr_dqm             ; // SDRAM Data Mask
-	logic [1:0]			sdr_ba              ; // SDRAM Bank Enable
-	logic [12:0]		sdr_addr            ; // SDRAM Address
+	logic [1:0]			    sdr_ba              ; // SDRAM Bank Enable
+	logic [12:0]		    sdr_addr            ; // SDRAM Address
 	logic [SDR_DW-1:0]	sdr_dq              ; // SDRA Data Input/output
 	
 	//----------------
@@ -81,41 +81,41 @@ interface interface_sdrc (
 	// Driver
 	clocking driver_cb @(posedge wb_clk)
 		default output #1;
-		output	wb_stb_i;
-		output	wb_cyc_i;
-		output	wb_we_i;
-		output	wb_sel_i;
-		output	wb_addr_i;
-   		output	wb_dat_i;
-   	endclocking
+		output	wb_stb;
+		output	wb_cyc;
+		output	wb_we;
+		output	wb_sel;
+		output	wb_addr;
+   	output	wb_dati;
+   endclocking
 
-   	// Monitor
-   	clocking monitor_cb @(posedge wb_clk)
-   		default input #1 output #1;
-   		output	wb_stb_i;
-        output	wb_cyc_i;
-        output	wb_we_i;
-        output	wb_addr_i;
-        input 	wb_dat_o;
-   	endclocking
+  // Monitor
+  clocking monitor_cb @(posedge wb_clk)
+  	default input #1 output #1;
+    output	wb_stb;
+    output	wb_cyc;
+    output	wb_we;
+    output	wb_addr;
+    input 	wb_dato;
+  endclocking
 
-   	// SDRAM Controler
-   	clocking sdrc_cb @(posedge sdram_clk)
-   		default input #1 inout #1;
-   		input	sdr_cs_n;
-        input	sdr_cke;
-        input	sdr_ras_n;
-        input	sdr_cas_n;
-        input	sdr_we_n;
-        input	sdr_dqm;
-        input	sdr_ba;
-        input 	sdr_addr; 
-        inount	sdr_dq; 
-   	endclocking
+  // SDRAM Controler
+  clocking sdrc_cb @(posedge sdram_clk)
+  	default input #1 inout #1;
+      input	sdr_cs_n;
+      input	sdr_cke;
+      input	sdr_ras_n;
+      input	sdr_cas_n;
+      input	sdr_we_n;
+      input	sdr_dqm;
+      input	sdr_ba;
+      input sdr_addr; 
+      inount	sdr_dq; 
+  	endclocking
 
-   	//---------
+   	//----------
    	// Modports
-   	//---------
+   	//----------
 
    	// Driver modport
    	modport DRIVER (clocking driver_cb, input logic wb_rst, input logic wb_clk,);
