@@ -21,8 +21,8 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-`include "interface.sv"
-`include "program.sv"
+`include "interface_sdrc.sv"
+//`include "test.sv"
 
 module sdrc_tb;
 

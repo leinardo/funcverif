@@ -23,7 +23,7 @@
 
 `define MON_IF mem_vif.MONITOR.monitor_cb
 
-class monitor; //extends  /* base class*/ (
+class monitor(); //extends  /* base class*/ (
 
 //Creando la interfaz virtual para el manejo de memoria
 virtual mem_intf mem_vif;

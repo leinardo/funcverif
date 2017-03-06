@@ -45,9 +45,11 @@ class scoreboard;
 	endfunction : new
 
 	task main ();
-		mem_intf.mem_aifo = afifo
-		mem_intf.mem_bifo = bfifo
-		mem_intf.mem_difo = dfifo
+		begin
+			mem_intf.mem_aifo = afifo
+			mem_intf.mem_bifo = bfifo
+			mem_intf.mem_difo = dfifo
+		end
 	endtask : main
 
 
