@@ -33,11 +33,12 @@ class scoreboard;
 	int afifo[$]; // address  fifo
 	int bfifo[$]; // Burst Length fifo
 
-	virtual mem_intf mem_afifo;
-	virtual mem_intf mem_bifo;
-	virtual mem_intf mem_dfifo;
+	virtual int mem_afifo[$];
+	virtual int mem_bifo[$];
+	virtual int mem_dfifo[$];
 
-	function new(virtual mem_intf mem_afifo, virtual mem_intf mem_bfifo, virtual mem_intf mem_dfifo);
+	//constructor
+function new(virtual int mem_afifo, virtual int mem_bfifo, virtual int mem_dfifo);
     //get the interface from test
     this.mem_afifo = afifo;
     this.mem_bfifo = bfifo;
@@ -46,9 +47,9 @@ class scoreboard;
 
 	task main ();
 		begin
-			mem_intf.mem_aifo = afifo
-			mem_intf.mem_bifo = bfifo
-			mem_intf.mem_difo = dfifo
+			mem_intf.mem_afifo = afifo;
+			mem_intf.mem_bfifo = bfifo;
+			mem_intf.mem_dfifo = dfifo;
 		end
 	endtask : main
 

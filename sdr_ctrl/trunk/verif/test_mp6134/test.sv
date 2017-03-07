@@ -23,11 +23,14 @@
 
 `include "environment.sv"
 program test(interface_sdrc intf);
+	//genvar env;
 	environment env;
-
+	int k;
+	reg [31:0] StartAddr;
+	int fifo_a[$], fifo_b[$], fifo_d[$];
 	initial begin
     //creating environment
-    env = new(intf);
+    env = new(intf, fifo_a, fifo_b, fifo_d);
     env.reinicio();
     #1000;
 	$display("-------------------------------------- ");

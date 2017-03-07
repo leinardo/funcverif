@@ -31,12 +31,12 @@ class environment;
 
 		//Creando la interfaz virtual para el manejo de memoria
 	virtual mem_intf mem_vif;
-	virtual mem_intf mem_afifo;
-	virtual mem_intf mem_bifo;
-	virtual mem_intf mem_dfifo;
+	virtual int mem_afifo[$];
+	virtual int mem_bifo[$];
+	virtual int mem_dfifo[$];
 
 	//constructor
-	function new(virtual mem_intf mem_vif, virtual mem_intf mem_afifo, virtual mem_intf mem_bfifo, virtual mem_intf mem_dfifo);
+	function new(virtual mem_intf mem_vif, virtual int mem_afifo, virtual int mem_bfifo, virtual int mem_dfifo);
 	    //get the interface from test
 	    this.mem_vif = mem_vif;
 	    this.mem_afifo = mem_afifo;
@@ -59,4 +59,4 @@ class environment;
 		mon.burst_read();
 	endtask : lectura
 
-endclass
+endclass : environment

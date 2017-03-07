@@ -79,7 +79,7 @@ interface interface_sdrc (
 	//----------------
 
 	// Driver
-	clocking driver_cb @(posedge wb_clk)
+	clocking driver_cb @(posedge wb_clk);
 		default output #1;
 		output	wb_stb;
 		output	wb_cyc;
@@ -90,7 +90,7 @@ interface interface_sdrc (
    endclocking
 
   // Monitor
-  clocking monitor_cb @(posedge wb_clk or negedge sdram_clk)
+  clocking monitor_cb @(posedge wb_clk or negedge sdram_clk);
   	default input #1 output #1;
     output	wb_stb;
     output	wb_cyc;
@@ -100,8 +100,8 @@ interface interface_sdrc (
   endclocking
 
   // SDRAM Controler
-  clocking sdrc_cb @(posedge sdram_clk)
-  	default input #1 inout #1;
+  clocking sdrc_cb @(posedge sdram_clk);
+  	default input #1 output #1;
       input	sdr_cs_n;
       input	sdr_cke;
       input	sdr_ras_n;
@@ -110,7 +110,7 @@ interface interface_sdrc (
       input	sdr_dqm;
       input	sdr_ba;
       input sdr_addr; 
-      inount	sdr_dq; 
+      inout	sdr_dq; 
   	endclocking
 
    	//----------
@@ -118,13 +118,13 @@ interface interface_sdrc (
    	//----------
 
   // Driver modport
-  modport DRIVER (clocking driver_cb, input logic wb_rst, input logic wb_clk,);
+  modport DRIVER (clocking driver_cb, input wb_rst, input wb_clk);
 
   // Monitor modport
-  modport MONITOR (clocking monitor_cb, input logic wb_rst, input logic wb_clk, input logic sdram_clk);
+  modport MONITOR (clocking monitor_cb, input wb_rst, input wb_clk, input sdram_clk);
 
   // SDRAM Controller modport
-  modport SDRC (clocking sdrc_cb, input logic sdram_resetn, input logic sdram_clk,);
+  modport SDRC (clocking sdrc_cb, input sdram_resetn, input sdram_clk);
 
 
 endinterface

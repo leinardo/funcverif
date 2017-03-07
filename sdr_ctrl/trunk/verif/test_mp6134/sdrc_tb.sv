@@ -54,6 +54,8 @@ interface_sdrc intf(10, 00, RESETN, sys_clk, sdram_clk, RESETN);
 
 `include "test.sv"
 
+test t1(intf);
+
 // Instancia de la unidad bajo prueba
 
 sdrc_top UUV (
