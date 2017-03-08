@@ -22,22 +22,20 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 `define DRIV_IF mem_vif.DRIVER.driver_cb
-
+//`include "scoreboard.sv"
 class driver; //extends  /* base class*/ (
-
+//scoreboard score;
+//score = new;
+mailbox drive2score;
 //Creando la interfaz virtual para el manejo de memoria
-virtual mem_intf mem_vif;
-virtual int mem_afifo[$];
-virtual int mem_bifo[$];
-virtual int mem_dfifo[$];
+virtual interface_sdrc mem_vif;
 
 	//constructor
-function new(virtual mem_intf mem_vif, virtual int mem_afifo, virtual int mem_bfifo, virtual int mem_dfifo);
+function new(virtual interface_sdrc mem_vif,mailbox drive2score);
     //get the interface from test
     this.mem_vif = mem_vif;
-    this.mem_afifo = mem_afifo;
-    this.mem_bfifo = mem_bfifo;
-    this.mem_dfifo = mem_dfifo;
+    this.drive2score = drive2score;
+    //score = new;
 endfunction : new
 
 //funciones y tareas
@@ -48,7 +46,7 @@ task reset;
 	//`DRIV_IF.wb_rst			<=0;
 	//`DRIV_IF.sdram_resetn	<=0;
 	#100
-	`DRIV_IF.RESETN 	<= 0;
+	`DRIV_IF.wb_rst 	<= 0;
 	`DRIV_IF.wb_stb		<= 0;
 	`DRIV_IF.wb_cyc		<= 0;
 	`DRIV_IF.wb_we		<= 0;
@@ -56,7 +54,7 @@ task reset;
 	`DRIV_IF.wb_addr	<= 0;
    	`DRIV_IF.wb_dati	<= 0;
    	#1000
-   	`DRIV_IF.RESETN 	<= 1;        
+   	`DRIV_IF.wb_rst 	<= 1;        
     //wait(!mem_vif.reset);
     $display("--------- [DRIVER] Reset Ended ---------");
 endtask
@@ -73,51 +71,36 @@ endtask
 task burst_write(input [31:0] Address, input [7:0] bl);
 	int i;
 	begin
-		mem_afifo.push_back(Address);
-		mem_bfifo.push_back(bl);
-	   @ (negedge `DRIV_IF.wb_clk);
+		drive2score.put(Address);
+		drive2score.put(bl);
+	   @ (negedge mem_vif.DRIVER.wb_clk);
 		$display("Write Address: %x, Burst Size: %d",Address,bl);
 
 		for(i=0; i < bl; i++) begin
-	    	`DRIV_IF.wb_stb        = 1;
-	    	`DRIV_IF.wb_cyc        = 1;
-			`DRIV_IF.wb_we         = 1;
-			`DRIV_IF.wb_sel        = 4'b1111;
-	    	`DRIV_IF.wb_addr       = Address[31:2]+i;
-	    	`DRIV_IF.wb_dati        = $random & 32'hFFFFFFFF;
-	      	mem_dfifo.push_back(`DRIV_IF.wb_dati);
+	    	`DRIV_IF.wb_stb        <= 1;
+	    	`DRIV_IF.wb_cyc        <= 1;
+			`DRIV_IF.wb_we         <= 1;
+			`DRIV_IF.wb_sel        <= 4'b1111;
+	    	`DRIV_IF.wb_addr       <= Address[31:2]+i;
+	    	`DRIV_IF.wb_dati       <= $random & 32'hFFFFFFFF;
+	      	drive2score.put(`DRIV_IF.wb_dati);
 
 	     	do begin
-	        	@ (posedge`DRIV_IF.wb_clk);
+	        	@ (posedge mem_vif.DRIVER.wb_clk);
 	      	end while(`DRIV_IF.wb_ack == 1'b0);
-	        	@ (negedge `DRIV_IF.wb_clk);
+	        	@ (negedge mem_vif.DRIVER.wb_clk);
 	   
 	       $display("Status: Burst-No: %d  Write Address: %x  WriteData: %x ",i,`DRIV_IF.wb_addr,`DRIV_IF.wb_dati);
 	   	end
-		`DRIV_IF.wb_stb	 = 0;
-		`DRIV_IF.wb_cyc	 = 0;
-		`DRIV_IF.wb_we	 = 'hx;
-		`DRIV_IF.wb_sel	 = 'hx;
-		`DRIV_IF.wb_addr = 'hx;
-		`DRIV_IF.wb_dati = 'hx;
+		`DRIV_IF.wb_stb	 <= 0;
+		`DRIV_IF.wb_cyc	 <= 0;
+		`DRIV_IF.wb_we	 <= 'hx;
+		`DRIV_IF.wb_sel	 <= 'hx;
+		`DRIV_IF.wb_addr <= 'hx;
+		`DRIV_IF.wb_dati <= 'hx;
 	end
 endtask
 
   //
-task main(input [31:0] Address, input [7:0] bl);
-	forever begin
-	  fork
-	    //Thread-1: Ejecuta un reset
-	    begin
-	      reset();
-	    end
-	    //Thread-2: Llama a la terea burst write.
-	    begin
-	      forever
-	        burst_write(Address, bl);
-	    end
-	  join_any
-	  disable fork;
-	end
 endtask
 endclass : driver

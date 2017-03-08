@@ -21,19 +21,19 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-interface interface_sdrc (
+interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input logic wb_rst, wb_clk, sdram_clk, sdram_resetn);
   // Global Variables
-  input logic [1:0] cfg_sdr_width,
-  input logic [1:0] cfg_colbits,
+  /*input logic [1:0] cfg_sdr_width;
+  input logic [1:0] cfg_colbits;
 
   // WB bus
-  input logic wb_rst,
-  input logic wb_clk,
+  input logic wb_rst;
+  input logic wb_clk;
                     
                 
   // Interface to SDRAMs
-  input logic	sdram_clk,
-  input logic	sdram_resetn);
+  input logic	sdram_clk;
+  input logic	sdram_resetn;*/
 
 	//-----------
 	// Parameters
@@ -80,51 +80,37 @@ interface interface_sdrc (
 
 	// Driver
 	clocking driver_cb @(posedge wb_clk);
-		default output #1;
-		output	wb_stb;
-		output	wb_cyc;
-		output	wb_we;
-		output	wb_sel;
-		output	wb_addr;
-   	output	wb_dati;
+		default input #1 output #1;
+		output	  wb_stb;
+		output 	wb_cyc;
+		output 	wb_we;
+		output 	wb_sel;
+		inout 	wb_addr; //inout
+   	input 	wb_dati; //input
+    output   wb_rst;
+    input  wb_ack;
    endclocking
 
   // Monitor
   clocking monitor_cb @(posedge wb_clk or negedge sdram_clk);
   	default input #1 output #1;
     output	wb_stb;
-    output	wb_cyc;
-    output	wb_we;
-    output	wb_addr;
-    input 	wb_dato;
+    output 	wb_cyc;
+    output 	wb_we;
+    inout 	wb_addr; //inout
+    output 	wb_dato; //output
+    input   wb_ack;
   endclocking
 
-  // SDRAM Controler
-  clocking sdrc_cb @(posedge sdram_clk);
-  	default input #1 output #1;
-      input	sdr_cs_n;
-      input	sdr_cke;
-      input	sdr_ras_n;
-      input	sdr_cas_n;
-      input	sdr_we_n;
-      input	sdr_dqm;
-      input	sdr_ba;
-      input sdr_addr; 
-      inout	sdr_dq; 
-  	endclocking
-
-   	//----------
-   	// Modports
-   	//----------
+	//----------
+  // Modports
+  //----------
 
   // Driver modport
   modport DRIVER (clocking driver_cb, input wb_rst, input wb_clk);
 
   // Monitor modport
   modport MONITOR (clocking monitor_cb, input wb_rst, input wb_clk, input sdram_clk);
-
-  // SDRAM Controller modport
-  modport SDRC (clocking sdrc_cb, input sdram_resetn, input sdram_clk);
 
 
 endinterface

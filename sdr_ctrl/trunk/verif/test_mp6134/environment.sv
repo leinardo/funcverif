@@ -27,36 +27,27 @@
 class environment;
 	monitor mon;
 	driver driv;
-	scoreboard score;
+	mailbox drive2score;
+	mailbox score2monitor;
 
-		//Creando la interfaz virtual para el manejo de memoria
-	virtual mem_intf mem_vif;
-	virtual int mem_afifo[$];
-	virtual int mem_bifo[$];
-	virtual int mem_dfifo[$];
+
+	//static scoreboard score;
+	scoreboard score;
+	
+	//Creando la interfaz virtual para el manejo de memoria
+	virtual interface_sdrc mem_vif;
 
 	//constructor
-	function new(virtual mem_intf mem_vif, virtual int mem_afifo, virtual int mem_bfifo, virtual int mem_dfifo);
+	function new(virtual interface_sdrc mem_vif);
 	    //get the interface from test
 	    this.mem_vif = mem_vif;
-	    this.mem_afifo = mem_afifo;
-	    this.mem_bfifo = mem_bfifo;
-		this.mem_dfifo = mem_dfifo;
-		mon = new(mem_vif,mem_afifo,mem_bfifo,mem_dfifo);
-		driv = new(mem_vif,mem_afifo,mem_bfifo,mem_dfifo);
-		score = new(mem_afifo,mem_bfifo,mem_dfifo);
+	    mon = new(mem_vif, score2monitor);
+		driv = new(mem_vif, drive2score);
+		drive2score = new();
+		score2monitor = new();
+		score = new(drive2score,score2monitor);
+		score.run();
 	endfunction : new
-
-	task reinicio();
-		driv.reset();
-	endtask : reinicio
-
-	task escritura(Address, bl);
-		driv.burst_write(Address, bl);
-	endtask : escritura
-
-	task lectura();
-		mon.burst_read();
-	endtask : lectura
+    
 
 endclass : environment

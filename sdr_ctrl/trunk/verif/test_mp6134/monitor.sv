@@ -22,22 +22,19 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 `define MON_IF mem_vif.MONITOR.monitor_cb
+//`include "scoreboard.sv"
 
 class monitor; //extends  /* base class*/ (
 
+mailbox score2monitor;
 //Creando la interfaz virtual para el manejo de memoria
-virtual mem_intf mem_vif;
-int mem_afifo[$];
-int mem_bifo[$];
-int mem_dfifo[$];
+virtual interface_sdrc mem_vif;
 
 	//constructor
-function new(virtual mem_intf mem_vif, virtual int mem_afifo, virtual int mem_bfifo, virtual int mem_dfifo);
+function new(virtual interface_sdrc mem_vif,mailbox score2monitor);
     //get the interface from test
     this.mem_vif = mem_vif;
-    this.mem_afifo = mem_afifo;
-    this.mem_bfifo = mem_bfifo;
-    this.mem_dfifo = mem_dfifo;
+    this.score2monitor = score2monitor;
 endfunction : new
 
 //funciones y tareas
@@ -49,41 +46,36 @@ task burst_read();
 	reg [31:0]  exp_data;
 	reg [31:0] 	ErrCnt;
 	begin
-		Address = mem_afifo.pop_front(); 
-		bl      = mem_bfifo.pop_front();
-	   @ (negedge `MON_IF.wb_clk);
+		score2monitor.get(Address); 
+		score2monitor.get(bl);
+	   @ (negedge mem_vif.MONITOR.wb_clk);
 		
 		for(i=0; i < bl; i++) begin
-	    	`MON_IF.wb_stb		= 1;
-	    	`MON_IF.wb_cyc		= 1;
-			`MON_IF.wb_we		= 0;
-	    	`MON_IF.wb_addr		= Address[31:2]+i;
-	    	exp_data        	= dfifo.pop_front(); // Exptected Read Data
+	    	`MON_IF.wb_stb		<= 1;
+	    	`MON_IF.wb_cyc		<= 1;
+			`MON_IF.wb_we		<= 0;
+	    	`MON_IF.wb_addr		<= Address[31:2]+i;
+
+	    	score2monitor.get(exp_data); // Exptected Read Data
 
 	     	do begin
-	        	@ (posedge`MON_IF.wb_clk);
+	        	@ (posedge mem_vif.MONITOR.wb_clk);
 	      	end while(`MON_IF.wb_ack == 1'b0);
-	      	if(wb_dato !== exp_data) begin
+	      	if(`MON_IF.wb_dato !== exp_data) begin
 		             $display("READ ERROR: Burst-No: %d Addr: %x Rxp: %x Exd: %x",i,`MON_IF.wb_addr,`MON_IF.wb_dato,exp_data);
-		             ErrCnt = ErrCnt+1;
+		             //ErrCnt = ErrCnt+1;
 		         end else begin
 		             $display("READ STATUS: Burst-No: %d Addr: %x Rxd: %x",i,`MON_IF.wb_addr,`MON_IF.wb_dato);
 			end 
-			@ (negedge `MON_IF.sdram_clk);
+			@ (negedge mem_vif.MONITOR.sdram_clk);
 	   
 	   	end
-		`MON_IF.wb_stb	 = 0;
-		`MON_IF.wb_cyc	 = 0;
-		`MON_IF.wb_we	 = 'hx;
-		`MON_IF.wb_addr = 'hx;
+		`MON_IF.wb_stb	 <= 0;
+		`MON_IF.wb_cyc	 <= 0;
+		`MON_IF.wb_we	 <= 'hx;
+		`MON_IF.wb_addr <= 'hx;
 	end
 endtask
 
-  //
-task main();
-	begin
-		forever
-		burst_read();
-	end
-endtask
+
 endclass : monitor

@@ -21,37 +21,38 @@
 //
 /////////////////////////////////////////////////////////////////////////////////
 
-//`define SCOR_IF mem_vif.MONITOR.monitor_cb
-
 class scoreboard; 
 
-	//-------------------------------
-	// data/address/burst length FIFO
-	//-------------------------------
-	
-	int dfifo[$]; // data fifo
-	int afifo[$]; // address  fifo
-	int bfifo[$]; // Burst Length fifo
+//-------------------------------
+// data/address/burst length FIFO
+//-------------------------------
+/*
+static int dfifo[$]; // data fifo
+static int afifo[$]; // address  fifo
+static int bfifo[$]; // Burst Length fifo
+*/
+int af;
+int df;
+int bf;
 
-	virtual int mem_afifo[$];
-	virtual int mem_bifo[$];
-	virtual int mem_dfifo[$];
+mailbox drive2score;
+mailbox score2monitor;
 
-	//constructor
-function new(virtual int mem_afifo, virtual int mem_bfifo, virtual int mem_dfifo);
-    //get the interface from test
-    this.mem_afifo = afifo;
-    this.mem_bfifo = bfifo;
-    this.mem_dfifo = dfifo;
-	endfunction : new
+function new(mailbox drive2score,mailbox score2monitor);
+	this.drive2score = drive2score;
+	this.score2monitor = score2monitor;
+endfunction : new
 
-	task main ();
-		begin
-			mem_intf.mem_afifo = afifo;
-			mem_intf.mem_bfifo = bfifo;
-			mem_intf.mem_dfifo = dfifo;
-		end
-	endtask : main
+task run;
+	forever begin
+	drive2score.get(af);
+	drive2score.get(bf);
+	drive2score.get(df);
+	score2monitor.put(af);
+	score2monitor.put(bf);
+	score2monitor.put(df);
+	end
+endtask : run
 
 
-endclass : scoreboard
+endclass

@@ -20,9 +20,8 @@
 // Additional Comments: 
 //
 /////////////////////////////////////////////////////////////////////////////////
-
+`include "test.sv"
 `include "interface_sdrc.sv"
-//`include "test.sv"
 
 module sdrc_tb;
 
@@ -32,6 +31,7 @@ parameter P_SDR  = 20;     //    100MHz
 reg		RESETN;
 reg		sdram_clk;
 reg		sys_clk;
+wire	sdr_init_done;		// SDRAM Init Done 
 
 initial sys_clk = 0;
 initial sdram_clk = 0;
@@ -52,17 +52,15 @@ interface_sdrc intf(10, 00, RESETN, sys_clk, sdram_clk, RESETN);
 
 //Instancia de la prueba
 
-`include "test.sv"
+//`include "test.sv"
 
 test t1(intf);
 
-// Instancia de la unidad bajo prueba
-
-sdrc_top UUV (
+sdrc_top #(.SDR_DW(8),.SDR_BW(1)) UUV (
 		.cfg_sdr_width(intf.cfg_sdr_width),
         .cfg_colbits(intf.cfg_colbits),
         // WB bus
-        .wb_rst_i(intf.wb_rst),
+        .wb_rst_i(!intf.wb_rst),
         .wb_clk_i(intf.wb_clk),
         .wb_stb_i(intf.wb_stb),
         .wb_ack_o(intf.wb_ack),
@@ -85,6 +83,20 @@ sdrc_top UUV (
         .sdr_ba(intf.sdr_ba),
         .sdr_addr(intf.sdr_addr),
         .sdr_dq(intf.sdr_dq),
+		/* Parameters */
+
+        .sdr_init_done(sdr_init_done),
+        .cfg_req_depth(2'h3),	        //how many req. buffer should hold
+        .cfg_sdr_en(1'b1),
+        .cfg_sdr_mode_reg(13'h033),
+        .cfg_sdr_tras_d(4'h4),
+        .cfg_sdr_trp_d(4'h2),
+        .cfg_sdr_trcd_d(4'h2),
+        .cfg_sdr_cas(3'h3),
+        .cfg_sdr_trcar_d(4'h7),
+        .cfg_sdr_twr_d(4'h1),
+        .cfg_sdr_rfsh(12'h100), 		// reduced from 12'hC35
+        .cfg_sdr_rfmax(3'h6)
         );
 
 // Instancia de la memoria 
