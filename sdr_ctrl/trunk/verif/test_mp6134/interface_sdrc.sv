@@ -21,7 +21,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input logic wb_rst, wb_clk, sdram_clk, sdram_resetn);
+interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, /*input logic wb_rst,*/ wb_clk, sdram_clk, sdram_resetn);
   // Global Variables
   /*input logic [1:0] cfg_sdr_width;
   input logic [1:0] cfg_colbits;
@@ -59,12 +59,13 @@ interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input log
   logic [dw-1:0] 		  wb_dato;
   logic	              wb_cyc;
   logic [2:0]			    wb_cti; 
+  logic               wb_rst;
 
 
   //--------------------
 	// Interface to SDRAMs
 	//--------------------
-	logic	              sdr_cke             ; // SDRAM CKE
+	/*logic	              sdr_cke             ; // SDRAM CKE
 	logic               sdr_cs_n            ; // SDRAM Chip Select
 	logic	              sdr_ras_n           ; // SDRAM ras
 	logic	              sdr_cas_n           ; // SDRAM cas
@@ -73,7 +74,7 @@ interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input log
 	logic [1:0]			    sdr_ba              ; // SDRAM Bank Enable
 	logic [12:0]		    sdr_addr            ; // SDRAM Address
 	logic [SDR_DW-1:0]	sdr_dq              ; // SDRA Data Input/output
-	
+	*/
 	//----------------
 	// Clocking Blocks
 	//----------------
@@ -86,8 +87,8 @@ interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input log
 		output 	wb_we;
 		output 	wb_sel;
 		inout 	wb_addr; //inout
-   	input 	wb_dati; //input
-    output   wb_rst;
+   	inout/*put*/ 	wb_dati; //input
+    //output   wb_rst;
     input  wb_ack;
    endclocking
 
@@ -98,7 +99,7 @@ interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input log
     output 	wb_cyc;
     output 	wb_we;
     inout 	wb_addr; //inout
-    output 	wb_dato; //output
+    /*output*/inout 	wb_dato; //output
     input   wb_ack;
   endclocking
 

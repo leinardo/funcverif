@@ -46,7 +46,7 @@ task reset;
 	//`DRIV_IF.wb_rst			<=0;
 	//`DRIV_IF.sdram_resetn	<=0;
 	#100
-	`DRIV_IF.wb_rst 	<= 0;
+	mem_vif.wb_rst 	<= 0;
 	`DRIV_IF.wb_stb		<= 0;
 	`DRIV_IF.wb_cyc		<= 0;
 	`DRIV_IF.wb_we		<= 0;
@@ -54,7 +54,7 @@ task reset;
 	`DRIV_IF.wb_addr	<= 0;
    	`DRIV_IF.wb_dati	<= 0;
    	#1000
-   	`DRIV_IF.wb_rst 	<= 1;        
+   	mem_vif.wb_rst 	<= 1;        
     //wait(!mem_vif.reset);
     $display("--------- [DRIVER] Reset Ended ---------");
 endtask
@@ -102,5 +102,5 @@ task burst_write(input [31:0] Address, input [7:0] bl);
 endtask
 
   //
-endtask
+//endtask
 endclass : driver

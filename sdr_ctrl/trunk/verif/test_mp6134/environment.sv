@@ -46,7 +46,7 @@ class environment;
 		drive2score = new();
 		score2monitor = new();
 		score = new(drive2score,score2monitor);
-		score.run();
+		//score.run();
 	endfunction : new
     
 

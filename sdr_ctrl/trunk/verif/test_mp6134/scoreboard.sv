@@ -44,7 +44,7 @@ function new(mailbox drive2score,mailbox score2monitor);
 endfunction : new
 
 task run;
-	forever begin
+	begin
 	drive2score.get(af);
 	drive2score.get(bf);
 	drive2score.get(df);

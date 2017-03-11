@@ -30,7 +30,7 @@ program test(interface_sdrc intf);
 	initial begin
     //creating environment
     env = new(intf);
-    env.reinicio();
+    env.driv.reset();
     #1000;
 	$display("-------------------------------------- ");
 	$display(" Case-1: Single Write/Read Case        ");
@@ -38,7 +38,7 @@ program test(interface_sdrc intf);
 
 	env.driv.burst_write(32'h4_0000,8'h4);  
 	#1000;
-	env.driv.burst_read();  
+	env.mon.burst_read();  
 
 	// Repeat one more time to analysis the 
 	// SDRAM state change for same col/row address
@@ -46,9 +46,9 @@ program test(interface_sdrc intf);
 	$display(" Case-2: Repeat same transfer once again ");
 	$display("----------------------------------------");
 	env.driv.burst_write(32'h4_0000,8'h4);  
-	env.driv.burst_read();  
+	env.mon.burst_read();  
 	env.driv.burst_write(32'h0040_0000,8'h5);  
-	env.driv.burst_read();  
+	env.mon.burst_read();  
 	$display("----------------------------------------");
 	$display(" Case-3 Create a Page Cross Over        ");
 	$display("----------------------------------------");
@@ -76,30 +76,30 @@ program test(interface_sdrc intf);
 	env.driv.burst_write(32'h0015_0FA4,8'hF);  
 	env.driv.burst_write(32'h0016_0FA8,8'hF);  
 	env.driv.burst_write(32'h0017_0FAC,8'hF);  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
 
 	$display("----------------------------------------");
 	$display(" Case:4 4 Write & 4 Read                ");
@@ -108,10 +108,10 @@ program test(interface_sdrc intf);
 	env.driv.burst_write(32'h5_0000,8'h5);  
 	env.driv.burst_write(32'h6_0000,8'h6);  
 	env.driv.burst_write(32'h7_0000,8'h7);  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
 
 	$display("---------------------------------------");
 	$display(" Case:5 24 Write & 24 Read With Different Bank and Row ");
@@ -129,14 +129,14 @@ program test(interface_sdrc intf);
 	env.driv.burst_write({12'h001,2'b01,8'h00,2'b00},8'h5);   // Row: 1 Bank : 1
 	env.driv.burst_write({12'h001,2'b10,8'h00,2'b00},8'h6);   // Row: 1 Bank : 2
 	env.driv.burst_write({12'h001,2'b11,8'h00,2'b00},8'h7);   // Row: 1 Bank : 3
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
 	env.driv.burst_write({12'h002,2'b00,8'h00,2'b00},8'h4);   // Row: 2 Bank : 0
 	env.driv.burst_write({12'h002,2'b01,8'h00,2'b00},8'h5);   // Row: 2 Bank : 1
 	env.driv.burst_write({12'h002,2'b10,8'h00,2'b00},8'h6);   // Row: 2 Bank : 2
@@ -146,14 +146,14 @@ program test(interface_sdrc intf);
 	env.driv.burst_write({12'h003,2'b10,8'h00,2'b00},8'h6);   // Row: 3 Bank : 2
 	env.driv.burst_write({12'h003,2'b11,8'h00,2'b00},8'h7);   // Row: 3 Bank : 3
 
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
 	env.driv.burst_write({12'h002,2'b00,8'h00,2'b00},8'h4);   // Row: 2 Bank : 0
 	env.driv.burst_write({12'h002,2'b01,8'h01,2'b00},8'h5);   // Row: 2 Bank : 1
 	env.driv.burst_write({12'h002,2'b10,8'h02,2'b00},8'h6);   // Row: 2 Bank : 2
@@ -163,14 +163,14 @@ program test(interface_sdrc intf);
 	env.driv.burst_write({12'h003,2'b10,8'h06,2'b00},8'h6);   // Row: 3 Bank : 2
 	env.driv.burst_write({12'h003,2'b11,8'h07,2'b00},8'h7);   // Row: 3 Bank : 3
 
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
-	env.driv.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
+	env.mon.burst_read();  
 	$display("---------------------------------------------------");
 	$display(" Case: 6 Random 2 write and 2 read random");
 	$display("---------------------------------------------------");
@@ -182,9 +182,9 @@ program test(interface_sdrc intf);
 	    StartAddr = $random & 32'h003FFFFF;
 	    env.driv.burst_write(StartAddr,($random & 8'h0f)+1);  
 		#100;
-	    env.driv.burst_read();  
+	    env.mon.burst_read();  
 		#100;
-	    env.driv.burst_read();  
+	    env.mon.burst_read();  
 		#100;
 	    end
 
