@@ -37,7 +37,7 @@ initial sdram_clk = 0;
 always #(P_SYS/2) sys_clk = !sys_clk;
 always #(P_SDR/2) sdram_clk = !sdram_clk;
 interface_sdrc intf(10, 00, /*RESETN,*/ sys_clk, sdram_clk/*, RESETN*/);
-reg		RESETN;
+//reg		RESETN;
 
 wire	sdr_init_done;		// SDRAM Init Done 
 
@@ -48,7 +48,7 @@ wire  sdr_cas_n;
 wire  sdr_we_n;
 wire  sdr_dqm;
 wire  sdr_ba;
-wire  sdr_addr;
+wire  [11:0] sdr_addr;
 wire  [intf.SDR_DW-1:0] sdr_dq;
 
 
@@ -87,7 +87,8 @@ sdrc_top #(.SDR_DW(16),.SDR_BW(1)) UUV (
         .wb_cti_i(intf.wb_cti), 
 		// Interface to SDRAMs
         .sdram_clk(intf.sdram_clk),
-        .sdram_resetn(intf.sdram_resetn),
+        //.sdram_resetn(intf.sdram_resetn),
+        .sdram_resetn(intf.wb_rst),
         .sdr_cs_n(sdr_cs_n),
         .sdr_cke(sdr_cke),
         .sdr_ras_n(sdr_ras_n),

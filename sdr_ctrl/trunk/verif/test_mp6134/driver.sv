@@ -26,15 +26,19 @@
 class driver; //extends  /* base class*/ (
 //scoreboard score;
 //score = new;
-mailbox drive2score;
+mailbox score_address;
+mailbox score_data;
+mailbox score_bl;
 //Creando la interfaz virtual para el manejo de memoria
 virtual interface_sdrc mem_vif;
 
 	//constructor
-function new(virtual interface_sdrc mem_vif,mailbox drive2score);
+function new(virtual interface_sdrc mem_vif,mailbox score_address, score_data, score_bl);
     //get the interface from test
     this.mem_vif = mem_vif;
-    this.drive2score = drive2score;
+    this.score_address = score_address;
+    this.score_data = score_data;
+    this.score_bl = score_bl;
     //score = new;
 endfunction : new
 
@@ -45,14 +49,14 @@ task reset;
 	// Applying reset
 	//`DRIV_IF.wb_rst			<=0;
 	//`DRIV_IF.sdram_resetn	<=0;
-	#100
-	mem_vif.wb_rst 	<= 0;
-	`DRIV_IF.wb_stb		<= 0;
-	`DRIV_IF.wb_cyc		<= 0;
+	#100 mem_vif.wb_rst <= 1;
+	#100 mem_vif.wb_rst <= 0;
+/*	`DRIV_IF.wb_stb		<= 0;
+	`DRIV_IF.wb_cyc		<= 0;clea
 	`DRIV_IF.wb_we		<= 0;
 	`DRIV_IF.wb_sel		<= 0;
 	`DRIV_IF.wb_addr	<= 0;
-   	`DRIV_IF.wb_dati	<= 0;
+   	`DRIV_IF.wb_dati	<= 0;*/
    	#1000
    	mem_vif.wb_rst 	<= 1;        
     //wait(!mem_vif.reset);
@@ -70,9 +74,14 @@ endtask
 
 task burst_write(input [31:0] Address, input [7:0] bl);
 	int i;
+	reg add_mlbx;
+	reg bl_mlbx;
+	reg data_mlbx;
 	begin
-		drive2score.put(Address);
-		drive2score.put(bl);
+		add_mlbx = Address;
+		bl_mlbx = bl;
+		score_address.put(add_mlbx);
+		score_bl.put(bl_mlbx);
 	   @ (negedge mem_vif.DRIVER.wb_clk);
 		$display("Write Address: %x, Burst Size: %d",Address,bl);
 
@@ -83,7 +92,8 @@ task burst_write(input [31:0] Address, input [7:0] bl);
 			`DRIV_IF.wb_sel        <= 4'b1111;
 	    	`DRIV_IF.wb_addr       <= Address[31:2]+i;
 	    	`DRIV_IF.wb_dati       <= $random & 32'hFFFFFFFF;
-	      	drive2score.put(`DRIV_IF.wb_dati);
+	    	data_mlbx = `DRIV_IF.wb_dati;
+	      	score_data.put(data_mlbx);
 
 	     	do begin
 	        	@ (posedge mem_vif.DRIVER.wb_clk);

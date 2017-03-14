@@ -26,7 +26,7 @@
 
 class monitor; //extends  /* base class*/ (
 
-mailbox score2monitor;
+/*mailbox score2monitor;
 //Creando la interfaz virtual para el manejo de memoria
 virtual interface_sdrc mem_vif;
 
@@ -35,6 +35,22 @@ function new(virtual interface_sdrc mem_vif,mailbox score2monitor);
     //get the interface from test
     this.mem_vif = mem_vif;
     this.score2monitor = score2monitor;
+endfunction : new*/
+
+mailbox score_address;
+mailbox score_data;
+mailbox score_bl;
+//Creando la interfaz virtual para el manejo de memoria
+virtual interface_sdrc mem_vif;
+
+	//constructor
+function new(virtual interface_sdrc mem_vif,mailbox score_address, score_data, score_bl);
+    //get the interface from test
+    this.mem_vif = mem_vif;
+    this.score_address = score_address;
+    this.score_data = score_data;
+    this.score_bl = score_bl;
+    //score = new;
 endfunction : new
 
 //funciones y tareas
@@ -45,9 +61,17 @@ task burst_read();
 	reg [7:0]  	bl;
 	reg [31:0]  exp_data;
 	reg [31:0] 	ErrCnt;
+
 	begin
-		score2monitor.get(Address); 
-		score2monitor.get(bl);
+
+		$display("*********************************************MONITOR*************************************************");
+		$display("*********************************************MONITOR*************************************************");
+		$display("*********************************************MONITOR*************************************************");
+		score_address.get(Address); 
+
+		$display("Address:  %x", Address);
+		score_bl.get(bl);
+		$display("bl:  %x", bl);
 	   @ (negedge mem_vif.MONITOR.wb_clk);
 		
 		for(i=0; i < bl; i++) begin
@@ -56,8 +80,8 @@ task burst_read();
 			`MON_IF.wb_we		<= 0;
 	    	`MON_IF.wb_addr		<= Address[31:2]+i;
 
-	    	score2monitor.get(exp_data); // Exptected Read Data
-
+	    	score_data.get(exp_data); // Exptected Read Data
+	    	$display("exp_data:  %x", exp_data);
 	     	do begin
 	        	@ (posedge mem_vif.MONITOR.wb_clk);
 	      	end while(`MON_IF.wb_ack == 1'b0);

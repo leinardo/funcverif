@@ -27,11 +27,27 @@
 class environment;
 	monitor mon;
 	driver driv;
-	mailbox drive2score;
-	mailbox score2monitor;
+/*	mailbox drive2score;
+	mailbox score2monitor;*/
+mailbox score_address;
+mailbox score_data;
+mailbox score_bl;
+//Creando la interfaz virtual para el manejo de memoria
+virtual interface_sdrc mem_vif;
 
+	//constructor
+function new(virtual interface_sdrc mem_vif);
+    //get the interface from test
+    this.mem_vif = mem_vif;
+    score_address = new();
+    score_data = new();
+    score_bl = new();
+    mon = new(mem_vif, score_address, score_data, score_bl);
+	driv = new(mem_vif, score_address, score_data, score_bl);
+    //score = new;
+endfunction : new
 
-	//static scoreboard score;
+/*	//static scoreboard score;
 	scoreboard score;
 	
 	//Creando la interfaz virtual para el manejo de memoria
@@ -47,7 +63,7 @@ class environment;
 		score2monitor = new();
 		score = new(drive2score,score2monitor);
 		//score.run();
-	endfunction : new
+	endfunction : new*/
     
 
 endclass : environment

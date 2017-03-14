@@ -21,7 +21,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, /*input logic wb_rst,*/ wb_clk, sdram_clk, sdram_resetn);
+interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, /*input logic wb_rst,*/ wb_clk, sdram_clk/*, sdram_resetn*/);
   // Global Variables
   /*input logic [1:0] cfg_sdr_width;
   input logic [1:0] cfg_colbits;
@@ -82,14 +82,14 @@ interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, /*input l
 	// Driver
 	clocking driver_cb @(posedge wb_clk);
 		default input #1 output #1;
-		output	  wb_stb;
+		output	wb_stb;
 		output 	wb_cyc;
 		output 	wb_we;
 		output 	wb_sel;
 		inout 	wb_addr; //inout
    	inout/*put*/ 	wb_dati; //input
-    //output   wb_rst;
-    input  wb_ack;
+    //inout   wb_rst;
+    input   wb_ack;
    endclocking
 
   // Monitor

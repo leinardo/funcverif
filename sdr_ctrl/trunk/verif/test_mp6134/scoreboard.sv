@@ -31,28 +31,14 @@ static int dfifo[$]; // data fifo
 static int afifo[$]; // address  fifo
 static int bfifo[$]; // Burst Length fifo
 */
-int af;
-int df;
-int bf;
+int address_fifo;
+int data_fifo;
+int bl_fifo;
 
-mailbox drive2score;
-mailbox score2monitor;
-
-function new(mailbox drive2score,mailbox score2monitor);
-	this.drive2score = drive2score;
-	this.score2monitor = score2monitor;
+function new();
+	address_fifo = 0;
+	data_fifo = 0;
+	bl_fifo = 0;
 endfunction : new
-
-task run;
-	begin
-	drive2score.get(af);
-	drive2score.get(bf);
-	drive2score.get(df);
-	score2monitor.put(af);
-	score2monitor.put(bf);
-	score2monitor.put(df);
-	end
-endtask : run
-
 
 endclass
