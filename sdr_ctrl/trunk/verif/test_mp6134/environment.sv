@@ -20,30 +20,27 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-`include "monitor.sv"
+
 `include "scoreboard.sv"
 `include "driver.sv"
+`include "monitor.sv"
 
 class environment;
 	monitor mon;
 	driver driv;
-/*	mailbox drive2score;
-	mailbox score2monitor;*/
-mailbox score_address;
-mailbox score_data;
-mailbox score_bl;
-//Creando la interfaz virtual para el manejo de memoria
-virtual interface_sdrc mem_vif;
+	scoreboard score1;
+
+	//Creando la interfaz virtual para el manejo de memoria
+	virtual interface_sdrc mem_vif;
 
 	//constructor
 function new(virtual interface_sdrc mem_vif);
     //get the interface from test
     this.mem_vif = mem_vif;
-    score_address = new();
-    score_data = new();
-    score_bl = new();
-    mon = new(mem_vif, score_address, score_data, score_bl);
-	driv = new(mem_vif, score_address, score_data, score_bl);
+    score1 = new();
+    driv = new(mem_vif, score1);
+    mon = new(mem_vif, score1);
+	
     //score = new;
 endfunction : new
 

@@ -22,23 +22,19 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 `define DRIV_IF mem_vif.DRIVER.driver_cb
-//`include "scoreboard.sv"
 class driver; //extends  /* base class*/ (
-//scoreboard score;
-//score = new;
-mailbox score_address;
-mailbox score_data;
-mailbox score_bl;
-//Creando la interfaz virtual para el manejo de memoria
-virtual interface_sdrc mem_vif;
 
-	//constructor
-function new(virtual interface_sdrc mem_vif,mailbox score_address, score_data, score_bl);
+	//Creando la interfaz virtual para el manejo de memoria
+	virtual interface_sdrc mem_vif;
+	scoreboard score;
+
+//constructor
+function new(virtual interface_sdrc mem_vif,scoreboard score);//mailbox score_address, score_data, score_bl);
     //get the interface from test
     this.mem_vif = mem_vif;
-    this.score_address = score_address;
-    this.score_data = score_data;
-    this.score_bl = score_bl;
+    this.score = score;//score_address;
+    //this.score_data = score_data;
+    //this.score_bl = score_bl;
     //score = new;
 endfunction : new
 
@@ -58,30 +54,16 @@ task reset;
 	`DRIV_IF.wb_addr	<= 0;
    	`DRIV_IF.wb_dati	<= 0;*/
    	#1000
-   	mem_vif.wb_rst 	<= 1;        
+   	mem_vif.wb_rst 	<= 1;    
     //wait(!mem_vif.reset);
     $display("--------- [DRIVER] Reset Ended ---------");
 endtask
 
-	/*	//Tarea para reset
-		#100
-		// Applying reset
-		RESETN    = 1'h0;
-		#10000;
-		// Releasing reset
-		RESETN    = 1'h1;
-	endtask :reset*/
-
 task burst_write(input [31:0] Address, input [7:0] bl);
 	int i;
-	reg add_mlbx;
-	reg bl_mlbx;
-	reg data_mlbx;
 	begin
-		add_mlbx = Address;
-		bl_mlbx = bl;
-		score_address.put(add_mlbx);
-		score_bl.put(bl_mlbx);
+		score.bl_fifo.push_back(bl);
+		score.address_fifo.push_back(Address);
 	   @ (negedge mem_vif.DRIVER.wb_clk);
 		$display("Write Address: %x, Burst Size: %d",Address,bl);
 
@@ -92,8 +74,10 @@ task burst_write(input [31:0] Address, input [7:0] bl);
 			`DRIV_IF.wb_sel        <= 4'b1111;
 	    	`DRIV_IF.wb_addr       <= Address[31:2]+i;
 	    	`DRIV_IF.wb_dati       <= $random & 32'hFFFFFFFF;
-	    	data_mlbx = `DRIV_IF.wb_dati;
-	      	score_data.put(data_mlbx);
+			score.data_fifo.push_back(`DRIV_IF.wb_dati);
+			$display("Dato a cola: %x",`DRIV_IF.wb_dati);
+	    	//data_mlbx = `DRIV_IF.wb_dati;
+	      	//score_data.put(data_mlbx);
 
 	     	do begin
 	        	@ (posedge mem_vif.DRIVER.wb_clk);

@@ -31,14 +31,14 @@ static int dfifo[$]; // data fifo
 static int afifo[$]; // address  fifo
 static int bfifo[$]; // Burst Length fifo
 */
-int address_fifo;
-int data_fifo;
-int bl_fifo;
-
+int address_fifo[$];
+int data_fifo[$];
+int bl_fifo[$];
+/*
 function new();
 	address_fifo = 0;
 	data_fifo = 0;
 	bl_fifo = 0;
 endfunction : new
-
+*/
 endclass

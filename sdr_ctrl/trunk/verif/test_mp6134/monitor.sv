@@ -26,35 +26,19 @@
 
 class monitor; //extends  /* base class*/ (
 
-/*mailbox score2monitor;
-//Creando la interfaz virtual para el manejo de memoria
-virtual interface_sdrc mem_vif;
+	scoreboard score;
+	
+	//Creando la interfaz virtual para el manejo de memoria
+	virtual interface_sdrc mem_vif;
 
-	//constructor
-function new(virtual interface_sdrc mem_vif,mailbox score2monitor);
+//constructor
+function new(virtual interface_sdrc mem_vif,scoreboard score);//,mailbox score_address, score_data, score_bl);
     //get the interface from test
     this.mem_vif = mem_vif;
-    this.score2monitor = score2monitor;
-endfunction : new*/
-
-mailbox score_address;
-mailbox score_data;
-mailbox score_bl;
-//Creando la interfaz virtual para el manejo de memoria
-virtual interface_sdrc mem_vif;
-
-	//constructor
-function new(virtual interface_sdrc mem_vif,mailbox score_address, score_data, score_bl);
-    //get the interface from test
-    this.mem_vif = mem_vif;
-    this.score_address = score_address;
-    this.score_data = score_data;
-    this.score_bl = score_bl;
-    //score = new;
+    this.score = score;
 endfunction : new
 
 //funciones y tareas
-
 task burst_read();
 	int i;
 	reg [31:0] 	Address;
@@ -63,14 +47,12 @@ task burst_read();
 	reg [31:0] 	ErrCnt;
 
 	begin
-
 		$display("*********************************************MONITOR*************************************************");
 		$display("*********************************************MONITOR*************************************************");
 		$display("*********************************************MONITOR*************************************************");
-		score_address.get(Address); 
-
+		Address = score.address_fifo.pop_front(); 
 		$display("Address:  %x", Address);
-		score_bl.get(bl);
+		bl = score.bl_fifo.pop_front();
 		$display("bl:  %x", bl);
 	   @ (negedge mem_vif.MONITOR.wb_clk);
 		
@@ -79,8 +61,8 @@ task burst_read();
 	    	`MON_IF.wb_cyc		<= 1;
 			`MON_IF.wb_we		<= 0;
 	    	`MON_IF.wb_addr		<= Address[31:2]+i;
-
-	    	score_data.get(exp_data); // Exptected Read Data
+	    	
+	    	exp_data = score.data_fifo.pop_front(); // Exptected Read Data
 	    	$display("exp_data:  %x", exp_data);
 	     	do begin
 	        	@ (posedge mem_vif.MONITOR.wb_clk);
