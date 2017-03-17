@@ -77,17 +77,17 @@ task burst_write(input [31:0] Address, input [7:0] bl);
 	    	`DRIV_IF.wb_dati       <= $random & 32'hFFFFFFFF;
 	    	`DRIV_IF.wb_we         <= 1;
 			
-	    	//data_mlbx = `DRIV_IF.wb_dati;
-	      	//score_data.put(data_mlbx);
-
 	     	do begin
 	        	@ (posedge mem_vif.DRIVER.wb_clk);
 	      	end while(`DRIV_IF.wb_ack == 1'b0);
 	        	@ (negedge mem_vif.DRIVER.wb_clk);
+	   		@(posedge mem_vif.DRIVER.wb_clk);
 	   		score.data_fifo.push_back(`DRIV_IF.wb_dati);
 			$display("Dato que se va a guardar en la cola: %x",`DRIV_IF.wb_dati);
 	       	$display("Status: Burst-No: %d  Write Address: %x  WriteData: %x ",i,`DRIV_IF.wb_addr,`DRIV_IF.wb_dati);
+	    //@(negedge mem_vif.DRIVER.wb_clk);
 	   	end
+
 		`DRIV_IF.wb_stb	 <= 0;
 		`DRIV_IF.wb_cyc	 <= 0;
 		`DRIV_IF.wb_we	 <= 'hx;
@@ -97,6 +97,4 @@ task burst_write(input [31:0] Address, input [7:0] bl);
 	end
 endtask
 
-  //
-//endtask
 endclass : driver
