@@ -51,7 +51,7 @@ wire  [1:0] sdr_ba;
 wire  [12:0] sdr_addr;
 wire  [intf.SDR_DW-1:0] sdr_dq;
 
-
+wire #(2.0) sdram_clk_d   = sdram_clk;
 
 //clock generation
 //  always #5 clk = ~clk;
@@ -120,7 +120,7 @@ mt48lc8m8a2 #(.data_bits(16)) u_sdram8 (
           .Dq(sdr_dq), 
           .Addr(sdr_addr), 
           .Ba(sdr_ba), 
-          .Clk(sdram_clk), 
+          .Clk(sdram_clk_d), 
           .Cke(sdr_cke), 
           .Cs_n(sdr_cs_n), 
           .Ras_n(sdr_ras_n), 
