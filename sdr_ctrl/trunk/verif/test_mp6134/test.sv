@@ -192,12 +192,6 @@ program test(interface_sdrc intf);
 
 		#10000;
 		env.mon.error_report();
-	   /* $display("###############################");
-	    if(env.monitor.ErrCnt == 0)
-	        $display("STATUS: SDRAM Write/Read TEST PASSED");
-	    else
-	        $display("ERROR:  SDRAM Write/Read TEST FAILED");
-	        $display("###############################");*/
 
 	    $finish;
 	end

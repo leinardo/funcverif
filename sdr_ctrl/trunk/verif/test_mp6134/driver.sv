@@ -22,29 +22,23 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 `define DRIV_IF mem_vif.DRIVER.driver_cb
-class driver; //extends  /* base class*/ (
+class driver;
 
-	//Creando la interfaz virtual para el manejo de memoria
-	virtual interface_sdrc mem_vif;
-	scoreboard score;
+//Creando la interfaz virtual para el manejo de memoria
+virtual interface_sdrc mem_vif;
+scoreboard score;
 
 //constructor
-function new(virtual interface_sdrc mem_vif,scoreboard score);//mailbox score_address, score_data, score_bl);
+function new(virtual interface_sdrc mem_vif,scoreboard score);
     //get the interface from test
     this.mem_vif = mem_vif;
-    this.score = score;//score_address;
-    //this.score_data = score_data;
-    //this.score_bl = score_bl;
-    //score = new;
+    this.score = score;
 endfunction : new
 
 //funciones y tareas
 task reset;
-    //wait(mem_vif.reset);
     $display("--------- [DRIVER] Reset Started ---------");
 	// Applying reset
-	//`DRIV_IF.wb_rst			<=0;
-	//`DRIV_IF.sdram_resetn	<=0;
 	`DRIV_IF.wb_stb		<= 0;
 	`DRIV_IF.wb_cyc		<= 0;
 	`DRIV_IF.wb_we		<= 0;
@@ -57,7 +51,6 @@ task reset;
    	#10000
    	mem_vif.wb_rst 	<= 1;   
    	#1000
-    //wait(!mem_vif.reset);
     $display("--------- [DRIVER] Reset Ended ---------");
 endtask
 
@@ -67,7 +60,7 @@ task burst_write(input [31:0] Address, input [7:0] bl);
 		score.bl_fifo.push_back(bl);
 		score.address_fifo.push_back(Address);
 	   @ (negedge mem_vif.DRIVER.wb_clk);
-		$display("Write Address: %x, Burst Size: %d",Address,bl);
+		//$display("Write Address: %x, Burst Size: %d",Address,bl);
 
 		for(i=0; i < bl; i++) begin
 	    	`DRIV_IF.wb_stb        <= 1;
@@ -83,9 +76,8 @@ task burst_write(input [31:0] Address, input [7:0] bl);
 	        	@ (negedge mem_vif.DRIVER.wb_clk);
 	   		@(posedge mem_vif.DRIVER.wb_clk);
 	   		score.data_fifo.push_back(`DRIV_IF.wb_dati);
-			$display("Dato que se va a guardar en la cola: %x",`DRIV_IF.wb_dati);
+			//$display("Dato que se va a guardar en la cola: %x",`DRIV_IF.wb_dati);
 	       	$display("Status: Burst-No: %d  Write Address: %x  WriteData: %x ",i,`DRIV_IF.wb_addr,`DRIV_IF.wb_dati);
-	    //@(negedge mem_vif.DRIVER.wb_clk);
 	   	end
 
 		`DRIV_IF.wb_stb	 <= 0;

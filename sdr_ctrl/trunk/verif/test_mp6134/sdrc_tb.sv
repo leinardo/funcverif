@@ -22,22 +22,14 @@
 /////////////////////////////////////////////////////////////////////////////////
 `include "test.sv"
 `include "interface_sdrc.sv"
-
+`include "clk.sv"
 module sdrc_tb;
 
-parameter P_SYS  = 10;     //    200MHz
-parameter P_SDR  = 20;     //    100MHz
+wire   sdram_clk;
+wire   sys_clk;
 
-reg   sdram_clk;
-reg   sys_clk;
-
-initial sys_clk = 0;
-initial sdram_clk = 0;
-
-always #(P_SYS/2) sys_clk = !sys_clk;
-always #(P_SDR/2) sdram_clk = !sdram_clk;
-interface_sdrc intf(2'b10, 2'b00, /*RESETN,*/ sys_clk, sdram_clk/*, RESETN*/);
-//reg		RESETN;
+clk #(.P_SYS(10), .P_SDR(20)) clock(sys_clk, sdram_clk);
+interface_sdrc intf(2'b10, 2'b00, sys_clk, sdram_clk);
 
 wire	sdr_init_done;		// SDRAM Init Done 
 
@@ -53,20 +45,7 @@ wire  [intf.SDR_DW-1:0] dq;
 
 wire #(2.0) sdram_clk_d   = sdram_clk;
 
-//clock generation
-//  always #5 clk = ~clk;
-  
-//reset Generation
-/*	initial begin
-    reset = 1;
-    #5 reset =0;
-  end*/
-
-
-
 //Instancia de la prueba
-
-//`include "test.sv"
 
 test t1(intf);
 
@@ -87,7 +66,6 @@ sdrc_top #(.SDR_DW(8),.SDR_BW(1)) UUV (
         .wb_cti_i(intf.wb_cti), 
 		// Interface to SDRAMs
         .sdram_clk(sdram_clk),
-        //.sdram_resetn(intf.sdram_resetn),
         .sdram_resetn(intf.wb_rst),
         .sdr_cs_n(sdr_cs_n),
         .sdr_cke(sdr_cke),

@@ -23,17 +23,6 @@
 
 interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input logic /*wb_rst,*/ wb_clk, sdram_clk/*, sdram_resetn*/);
   // Global Variables
-  /*input logic [1:0] cfg_sdr_width;
-  input logic [1:0] cfg_colbits;
-
-  // WB bus
-  input logic wb_rst;
-  input logic wb_clk;
-                    
-                
-  // Interface to SDRAMs
-  input logic	sdram_clk;
-  input logic	sdram_resetn;*/
 
 	//-----------
 	// Parameters
@@ -61,20 +50,6 @@ interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input log
   logic [2:0]			    wb_cti; 
   logic               wb_rst;
 
-
-  //--------------------
-	// Interface to SDRAMs
-	//--------------------
-	/*logic	              sdr_cke             ; // SDRAM CKE
-	logic               sdr_cs_n            ; // SDRAM Chip Select
-	logic	              sdr_ras_n           ; // SDRAM ras
-	logic	              sdr_cas_n           ; // SDRAM cas
-	logic	              sdr_we_n            ; // SDRAM write enable
-	logic [SDR_BW-1:0]	sdr_dqm             ; // SDRAM Data Mask
-	logic [1:0]			    sdr_ba              ; // SDRAM Bank Enable
-	logic [12:0]		    sdr_addr            ; // SDRAM Address
-	logic [SDR_DW-1:0]	sdr_dq              ; // SDRA Data Input/output
-	*/
 	//----------------
 	// Clocking Blocks
 	//----------------

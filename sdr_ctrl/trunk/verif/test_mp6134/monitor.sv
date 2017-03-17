@@ -22,9 +22,8 @@
 /////////////////////////////////////////////////////////////////////////////////
 
 `define MON_IF mem_vif.MONITOR.monitor_cb
-//`include "scoreboard.sv"
 
-class monitor; //extends  /* base class*/ (
+class monitor;
 
 	scoreboard score;
 	reg [31:0] 	ErrCnt;
@@ -33,7 +32,7 @@ class monitor; //extends  /* base class*/ (
 	virtual interface_sdrc mem_vif;
 
 //constructor
-function new(virtual interface_sdrc mem_vif,scoreboard score);//,mailbox score_address, score_data, score_bl);
+function new(virtual interface_sdrc mem_vif,scoreboard score);
     //get the interface from test
     this.mem_vif = mem_vif;
     this.score = score;
@@ -49,13 +48,10 @@ task burst_read();
 	reg [31:0]  exp_data;
 
 	begin
-		$display("*********************************************MONITOR*************************************************");
-		$display("*********************************************MONITOR*************************************************");
-		$display("*********************************************MONITOR*************************************************");
 		Address = score.address_fifo.pop_front(); 
-		$display("Address:  %x", Address);
+		//$display("Address:  %x", Address);
 		bl = score.bl_fifo.pop_front();
-		$display("bl:  %x", bl);
+		//$display("bl:  %x", bl);
 	   @ (negedge mem_vif.MONITOR.wb_clk);
 		
 		for(i=0; i < bl; i++) begin
@@ -66,7 +62,7 @@ task burst_read();
 	    	`MON_IF.wb_addr		<= Address[31:2]+i;
 	    	
 	    	exp_data = score.data_fifo.pop_front(); // Exptected Read Data
-	    	$display("exp_data:  %x", exp_data);
+	    	//$display("exp_data:  %x", exp_data);
 	     	do begin
 	        	@ (posedge mem_vif.MONITOR.wb_clk);
 	      	end while(`MON_IF.wb_ack == 1'b0);

@@ -44,23 +44,4 @@ function new(virtual interface_sdrc mem_vif);
     //score = new;
 endfunction : new
 
-/*	//static scoreboard score;
-	scoreboard score;
-	
-	//Creando la interfaz virtual para el manejo de memoria
-	virtual interface_sdrc mem_vif;
-
-	//constructor
-	function new(virtual interface_sdrc mem_vif);
-	    //get the interface from test
-	    this.mem_vif = mem_vif;
-	    mon = new(mem_vif, score2monitor);
-		driv = new(mem_vif, drive2score);
-		drive2score = new();
-		score2monitor = new();
-		score = new(drive2score,score2monitor);
-		//score.run();
-	endfunction : new*/
-    
-
 endclass : environment
