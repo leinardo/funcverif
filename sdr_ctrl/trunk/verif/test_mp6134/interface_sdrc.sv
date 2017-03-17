@@ -21,7 +21,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, /*input logic wb_rst,*/ wb_clk, sdram_clk/*, sdram_resetn*/);
+interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input logic /*wb_rst,*/ wb_clk, sdram_clk/*, sdram_resetn*/);
   // Global Variables
   /*input logic [1:0] cfg_sdr_width;
   input logic [1:0] cfg_colbits;

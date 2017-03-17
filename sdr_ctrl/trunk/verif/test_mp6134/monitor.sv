@@ -50,10 +50,10 @@ task burst_read();
 		$display("*********************************************MONITOR*************************************************");
 		$display("*********************************************MONITOR*************************************************");
 		$display("*********************************************MONITOR*************************************************");
-		Address = score.address_fifo.pop_front(); 
-		$display("Address:  %x", Address);
-		bl = score.bl_fifo.pop_front();
-		$display("bl:  %x", bl);
+		//Address = score.address_fifo.pop_front(); 
+		//$display("Address:  %x", Address);
+		//bl = score.bl_fifo.pop_front();
+		//$display("bl:  %x", bl);
 	   @ (negedge mem_vif.MONITOR.wb_clk);
 		
 		for(i=0; i < bl; i++) begin
@@ -62,8 +62,8 @@ task burst_read();
 			`MON_IF.wb_we		<= 0;
 	    	`MON_IF.wb_addr		<= Address[31:2]+i;
 	    	
-	    	exp_data = score.data_fifo.pop_front(); // Exptected Read Data
-	    	$display("exp_data:  %x", exp_data);
+	    	//exp_data = score.data_fifo.pop_front(); // Exptected Read Data
+	    	//$display("exp_data:  %x", exp_data);
 	     	do begin
 	        	@ (posedge mem_vif.MONITOR.wb_clk);
 	      	end while(`MON_IF.wb_ack == 1'b0);
