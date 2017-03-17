@@ -27,7 +27,8 @@
 class monitor; //extends  /* base class*/ (
 
 	scoreboard score;
-	
+	reg [31:0] 	ErrCnt;
+	reg 	readings ;
 	//Creando la interfaz virtual para el manejo de memoria
 	virtual interface_sdrc mem_vif;
 
@@ -36,6 +37,8 @@ function new(virtual interface_sdrc mem_vif,scoreboard score);//,mailbox score_a
     //get the interface from test
     this.mem_vif = mem_vif;
     this.score = score;
+    readings = 0;
+    ErrCnt = 32'd0;
 endfunction : new
 
 //funciones y tareas
@@ -44,7 +47,6 @@ task burst_read();
 	reg [31:0] 	Address;
 	reg [7:0]  	bl;
 	reg [31:0]  exp_data;
-	reg [31:0] 	ErrCnt;
 
 	begin
 		$display("*********************************************MONITOR*************************************************");
@@ -57,6 +59,7 @@ task burst_read();
 	   @ (negedge mem_vif.MONITOR.wb_clk);
 		
 		for(i=0; i < bl; i++) begin
+			readings = 1;
 	    	`MON_IF.wb_stb		<= 1;
 	    	`MON_IF.wb_cyc		<= 1;
 			`MON_IF.wb_we		<= 0;
@@ -69,7 +72,7 @@ task burst_read();
 	      	end while(`MON_IF.wb_ack == 1'b0);
 	      	if(`MON_IF.wb_dato !== exp_data) begin
 		             $display("READ ERROR: Burst-No: %d Addr: %x Rxp: %x Exd: %x",i,`MON_IF.wb_addr,`MON_IF.wb_dato,exp_data);
-		             //ErrCnt = ErrCnt+1;
+		             ErrCnt = ErrCnt+1;
 		         end else begin
 		             $display("READ STATUS: Burst-No: %d Addr: %x Rxd: %x",i,`MON_IF.wb_addr,`MON_IF.wb_dato);
 			end 
@@ -83,5 +86,13 @@ task burst_read();
 	end
 endtask
 
+task error_report();
+	$display("###############################");
+	if(ErrCnt == 0 && readings == 1)
+	    $display("STATUS: SDRAM Write/Read TEST PASSED");
+	else
+	    $display("ERROR:  SDRAM Write/Read TEST FAILED");
+	$display("###############################");
+endtask : error_report
 
 endclass : monitor
