@@ -31,6 +31,8 @@ program test(interface_sdrc intf);
     //creating environment
     env = new(intf);
     env.driv.reset();
+    wait(UUV.sdr_init_done == 1);
+
     #1000;
 	$display("-------------------------------------- ");
 	$display(" Case-1: Single Write/Read Case        ");

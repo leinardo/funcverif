@@ -49,7 +49,7 @@ wire  sdr_we_n;
 wire  sdr_dqm;
 wire  [1:0] sdr_ba;
 wire  [12:0] sdr_addr;
-wire  [intf.SDR_DW-1:0] sdr_dq;
+wire  [intf.SDR_DW-1:0] dq;
 
 wire #(2.0) sdram_clk_d   = sdram_clk;
 
@@ -70,7 +70,7 @@ wire #(2.0) sdram_clk_d   = sdram_clk;
 
 test t1(intf);
 
-sdrc_top #(.SDR_DW(16),.SDR_BW(1)) UUV (
+sdrc_top #(.SDR_DW(8),.SDR_BW(1)) UUV (
 		.cfg_sdr_width(intf.cfg_sdr_width),
         .cfg_colbits(intf.cfg_colbits),
         // WB bus
@@ -97,7 +97,7 @@ sdrc_top #(.SDR_DW(16),.SDR_BW(1)) UUV (
         .sdr_dqm(sdr_dqm),
         .sdr_ba(sdr_ba),
         .sdr_addr(sdr_addr),
-        .sdr_dq(sdr_dq),
+        .sdr_dq(dq),
 		/* Parameters */
 
         .sdr_init_done(sdr_init_done),
@@ -116,9 +116,9 @@ sdrc_top #(.SDR_DW(16),.SDR_BW(1)) UUV (
 
 // Instancia de la memoria 
 
-mt48lc8m8a2 #(.data_bits(16)) u_sdram8 (
-          .Dq(sdr_dq), 
-          .Addr(sdr_addr), 
+mt48lc8m8a2 #(.data_bits(8)) u_sdram8 (
+          .Dq(dq), 
+          .Addr(sdr_addr[11:0]), 
           .Ba(sdr_ba), 
           .Clk(sdram_clk_d), 
           .Cke(sdr_cke), 

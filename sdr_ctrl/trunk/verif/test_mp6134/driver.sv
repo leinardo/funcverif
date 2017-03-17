@@ -45,16 +45,18 @@ task reset;
 	// Applying reset
 	//`DRIV_IF.wb_rst			<=0;
 	//`DRIV_IF.sdram_resetn	<=0;
-	#100 mem_vif.wb_rst <= 1;
-	#100 mem_vif.wb_rst <= 0;
-/*	`DRIV_IF.wb_stb		<= 0;
-	`DRIV_IF.wb_cyc		<= 0;clea
+	`DRIV_IF.wb_stb		<= 0;
+	`DRIV_IF.wb_cyc		<= 0;
 	`DRIV_IF.wb_we		<= 0;
-	`DRIV_IF.wb_sel		<= 0;
+	`DRIV_IF.wb_sel		<= 4'h0;
 	`DRIV_IF.wb_addr	<= 0;
-   	`DRIV_IF.wb_dati	<= 0;*/
+   	`DRIV_IF.wb_dati	<= 0;
+	mem_vif.wb_rst <= 1;
+	#100 mem_vif.wb_rst <= 0;
+	
+   	#10000
+   	mem_vif.wb_rst 	<= 1;   
    	#1000
-   	mem_vif.wb_rst 	<= 1;    
     //wait(!mem_vif.reset);
     $display("--------- [DRIVER] Reset Ended ---------");
 endtask
@@ -70,12 +72,11 @@ task burst_write(input [31:0] Address, input [7:0] bl);
 		for(i=0; i < bl; i++) begin
 	    	`DRIV_IF.wb_stb        <= 1;
 	    	`DRIV_IF.wb_cyc        <= 1;
-			`DRIV_IF.wb_we         <= 1;
 			`DRIV_IF.wb_sel        <= 4'b1111;
 	    	`DRIV_IF.wb_addr       <= Address[31:2]+i;
 	    	`DRIV_IF.wb_dati       <= $random & 32'hFFFFFFFF;
-			score.data_fifo.push_back(`DRIV_IF.wb_dati);
-			$display("Dato a cola: %x",`DRIV_IF.wb_dati);
+	    	`DRIV_IF.wb_we         <= 1;
+			
 	    	//data_mlbx = `DRIV_IF.wb_dati;
 	      	//score_data.put(data_mlbx);
 
@@ -83,8 +84,9 @@ task burst_write(input [31:0] Address, input [7:0] bl);
 	        	@ (posedge mem_vif.DRIVER.wb_clk);
 	      	end while(`DRIV_IF.wb_ack == 1'b0);
 	        	@ (negedge mem_vif.DRIVER.wb_clk);
-	   
-	       $display("Status: Burst-No: %d  Write Address: %x  WriteData: %x ",i,`DRIV_IF.wb_addr,`DRIV_IF.wb_dati);
+	   		score.data_fifo.push_back(`DRIV_IF.wb_dati);
+			$display("Dato que se va a guardar en la cola: %x",`DRIV_IF.wb_dati);
+	       	$display("Status: Burst-No: %d  Write Address: %x  WriteData: %x ",i,`DRIV_IF.wb_addr,`DRIV_IF.wb_dati);
 	   	end
 		`DRIV_IF.wb_stb	 <= 0;
 		`DRIV_IF.wb_cyc	 <= 0;

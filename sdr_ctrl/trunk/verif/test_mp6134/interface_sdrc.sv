@@ -42,7 +42,7 @@ interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input log
 	parameter APP_DW   = 32;  // Application Data Width 
 	parameter APP_BW   = 4;   // Application Byte Width
 	parameter APP_RW   = 9;   // Application Request Width
-	parameter SDR_DW   = 16;  // SDR Data Width 
+	parameter SDR_DW   = 8;  // SDR Data Width 
 	parameter SDR_BW   = 2;   // SDR Byte Width         
 	parameter dw       = 32;  // data width
 
