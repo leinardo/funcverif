@@ -25,13 +25,17 @@ class estimulo1;
 
 	rand bit [31:0] Addr_write;
 	rand bit [7:0] bl;
+	int parametro1;
+	int parametro2;
 
 	constraint c_estimulo1 {
-		Addr_write >= 32'h4_0000;
-		Addr_write <= 32'h7_0000;
 
-		bl >= 8'h4;
-		bl <= 8'h7;
+
+		Addr_write >= parametro1;// 32'h0004_0000;
+		Addr_write <= parametro2;// 32'h0007_0000;
+
+		bl > 8'h4;
+		bl < 8'h7;
 	}
 	
 
