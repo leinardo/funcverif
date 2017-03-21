@@ -27,10 +27,14 @@ class estimulo2;
 	rand bit [7:0] bl;
 
 	constraint c_estimulo2 {
-		Addr_write >= 32'h0000_0FF0;
-		Addr_write <= 32'h0017_0FAC;
 
-		bl >= 8'h8;
+		Addr_write [11:0] inside {[4085:4095]};
+		Addr_write [31:12] inside {[0:368]}; // limite de los bits menos significativos, esto depende de la memoria
+
+		//Addr_write >= 32'h0000_0FF0;
+		//Addr_write <= 32'h0017_0FAC;
+
+		bl >= 8'hE;
 		bl <= 8'hF;
 	}
 	
