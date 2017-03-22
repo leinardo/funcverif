@@ -1,0 +1,14 @@
++define+VERBOSE
++incdir+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/core
++incdir+/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/test_mp6134/
+/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/test_mp6134/sdrc_tb.sv
+/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/model/mt48lc8m8a2.v 
+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/top/sdrc_top.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/wb2sdrc/wb2sdrc.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/lib/async_fifo.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/core/sdrc_core.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/core/sdrc_bank_ctl.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/core/sdrc_bank_fsm.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/core/sdrc_bs_convert.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/core/sdrc_req_gen.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/core/sdrc_xfr_ctl.v 
