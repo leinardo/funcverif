@@ -18,3 +18,4 @@ sdr_ctrl/trunk/verif/run/simv.cst/
 sdr_ctrl/trunk/verif/run/simv.daidir/
 sdr_ctrl/trunk/verif/run/ucli.key
 sdr_ctrl/trunk/verif/test_mp6134/environment2_2.sv
+sdr_ctrl/trunk/verif/run/.restartSimSession.tcl.old
