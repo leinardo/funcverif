@@ -308,22 +308,24 @@ parameter  SDR_BW   = 2;   // SDR Byte Width
    assign rank_fifo_full = (rank_cnt[2]) ? 1'b1 : 
 			   (rank_cnt[1:0] == a2b_req_depth) ? 1'b1 : 1'b0; 
 
-   // FIFO Check
+	// FIFO Check
+
+	// synopsys translate_off
+
 
 	`ifdef ASSERT_ON
-	// synopsys translate_on
 
 	// Asertions
 		property read_empty_fifo;
-			@(posedge clk)(~rank_fifo_wr & rank_fifo_rd && rank_cnt == 3'h0)
-		endproperty : read_empty_fifo
+			@(posedge clk) not (~rank_fifo_wr & rank_fifo_rd && rank_cnt == 3'h0);
+		endproperty
 			
 		property write_full_fifo;
-			@(posedge clk)(rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4)
-		endproperty : write_full_fifo
+			@(posedge clk) not (rank_fifo_wr && ~rank_fifo_rd && rank_cnt == 3'h4);
+		endproperty
 
-		remP : assert property (read_empty_fifo) $display ("%t: %m: ERROR!!! Read from empty Fifo", $time);
-		wrfP : assert property (write_full_fifo) $display ("%t: %m: ERROR!!! Write to full Fifo", $time);
+		remP : assert property (read_empty_fifo) else $display ("%t: %m: ERROR!!! Read from empty Fifo", $time);
+		wrfP : assert property (write_full_fifo) else $display ("%t: %m: ERROR!!! Write to full Fifo", $time);
 	
 	`else
 
@@ -343,7 +345,8 @@ parameter  SDR_BW   = 2;   // SDR Byte Width
 
 	`endif
    
-     
+    // synopsys translate_on
+
    always @ (posedge clk)
       if (~reset_n) begin
 	 rank_cnt <= 3'b0;
