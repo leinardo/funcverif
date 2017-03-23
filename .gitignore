@@ -1,0 +1,20 @@
+# Archivos ignorables para el repositorio
+dr_ctrl/trunk/verif/run/.restartSimSession.tcl.old
+sdr_ctrl/trunk/verif/run/.synopsys_dve_rebuild.tcl
+sdr_ctrl/trunk/verif/run/DVEfiles/
+sdr_ctrl/trunk/verif/run/Texto_Salida.txt
+sdr_ctrl/trunk/verif/run/Texto_Salida2.txt
+sdr_ctrl/trunk/verif/run/Texto_Salida3.txt
+sdr_ctrl/trunk/verif/run/Texto_Salida4.txt
+sdr_ctrl/trunk/verif/run/Texto_Salida5.txt
+sdr_ctrl/trunk/verif/run/Texto_Salida6.txt
+sdr_ctrl/trunk/verif/run/Texto_Salida7.txt
+sdr_ctrl/trunk/verif/run/Texto_Salida8.txt
+sdr_ctrl/trunk/verif/run/Texto_Salida_correcto.txt
+sdr_ctrl/trunk/verif/run/csrc/
+sdr_ctrl/trunk/verif/run/inter.vpd
+sdr_ctrl/trunk/verif/run/simv
+sdr_ctrl/trunk/verif/run/simv.cst/
+sdr_ctrl/trunk/verif/run/simv.daidir/
+sdr_ctrl/trunk/verif/run/ucli.key
+sdr_ctrl/trunk/verif/test_mp6134/environment2_2.sv
