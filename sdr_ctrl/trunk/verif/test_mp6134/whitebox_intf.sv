@@ -20,7 +20,7 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-Parameter TOP_PATH = sdrc_tb.t1
+Parameter TOP_PATH = sdrc_tb.UUV
 interface whitebox_intf;
 
 // Variables	
