@@ -57,8 +57,11 @@ interface whitebox_intf;
 	aTimeResetP : assert property (tim_reset) else $error("%m Violation of Wishbone Rule_3.05: rst didn't asserted for at leasr one complete clk cicle");
 
 // 3.10: Todas las señales deben de ser capaz de reaccionar al reset en cualquier momento
+	property reset_react;
+		@(posedge clock) ~strobe |-> ( ackowledge == 0 );
+	endproperty
 	
-	aRstReactP: assert (~strobe |-> ( ackowledge == 0 )) else $error("%m Violation of Wishbone Rule_3.10: ack did't react to the rst");;
+	aRstReactP: assert (reset_react) else $error("%m Violation of Wishbone Rule_3.10: ack did't react to the rst");;
 
 // 3.25: La señal CYC debe asertarce siempre que STB sea asertada.
 	property cyc_stb;
