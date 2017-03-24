@@ -23,6 +23,7 @@
 `include "test.sv"
 `include "interface_sdrc.sv"
 `include "clk.sv"
+`include "whitebox_intf.sv"
 module sdrc_tb;
 
 wire   sdram_clk;
@@ -30,6 +31,7 @@ wire   sys_clk;
 
 clk #(.P_SYS(10), .P_SDR(20)) clock(sys_clk, sdram_clk);
 interface_sdrc intf(2'b10, 2'b00, sys_clk, sdram_clk);
+whitebox_intf whiteb_intf();
 
 wire	sdr_init_done;		// SDRAM Init Done 
 

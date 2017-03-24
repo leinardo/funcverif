@@ -61,9 +61,8 @@ interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input log
 		output 	wb_cyc;
 		output 	wb_we;
 		output 	wb_sel;
-		inout 	wb_addr; //inout
-   	inout/*put*/ 	wb_dati; //input
-    //inout   wb_rst;
+		inout 	wb_addr;
+   	inout   wb_dati;
     input   wb_ack;
    endclocking
 
@@ -73,8 +72,8 @@ interface interface_sdrc(input logic [1:0] cfg_sdr_width, cfg_colbits, input log
     output	wb_stb;
     output 	wb_cyc;
     output 	wb_we;
-    inout 	wb_addr; //inout
-    /*output*/inout 	wb_dato; //output
+    inout 	wb_addr; 
+    inout 	wb_dato; //output
     input   wb_ack;
   endclocking
 

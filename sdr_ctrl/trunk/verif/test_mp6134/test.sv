@@ -32,7 +32,8 @@ program test(interface_sdrc intf);
     env2 = new(intf);
     env2.driv2.reset();
     wait(UUV.sdr_init_done == 1);
-
+    //var = 1;
+    //#100000 var=0;
     #1000;
 	$display("-------------------------------------- ");
 	$display(" Case-1: Single Write/Read Case        ");
@@ -106,10 +107,10 @@ program test(interface_sdrc intf);
 	$display("----------------------------------------");
 	$display(" Case:4 4 Write & 4 Read                ");
 	$display("----------------------------------------");
-	env2.driv2.burst_write(1,32'h0004_0000,32'h0007_0000);  
-	env2.driv2.burst_write(1,32'h0004_0000,32'h0007_0000);  
-	env2.driv2.burst_write(1,32'h0004_0000,32'h0007_0000);  
-	env2.driv2.burst_write(1,32'h0004_0000,32'h0007_0000);  
+	env2.driv2.burst_write(0,32'h4_0000,8'h4);  
+ 	env2.driv2.burst_write(0,32'h5_0000,8'h5);  
+ 	env2.driv2.burst_write(0,32'h6_0000,8'h6);  
+ 	env2.driv2.burst_write(0,32'h7_0000,8'h7);
 	env2.mon.burst_read();  
 	env2.mon.burst_read();  
 	env2.mon.burst_read();  
@@ -124,13 +125,13 @@ program test(interface_sdrc intf);
 	//    <12 Bit Row> <2 Bit Bank> <8 Bit Column> <2'b00>
 	//
 	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 0 Bank : 0
-	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 0 Bank : 1
-	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 0 Bank : 2
-	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 0 Bank : 3
-	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 1 Bank : 0
-	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 1 Bank : 1
-	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 1 Bank : 2
-	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 1 Bank : 3
+	env2.driv2.burst_write(3,12'h000,2'b01);   // Row: 0 Bank : 1
+	env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 0 Bank : 2
+	env2.driv2.burst_write(3,12'h000,2'b11);   // Row: 0 Bank : 3
+	env2.driv2.burst_write(3,12'h001,2'b00);   // Row: 1 Bank : 0
+	env2.driv2.burst_write(3,12'h001,2'b01);   // Row: 1 Bank : 1
+	env2.driv2.burst_write(3,12'h001,2'b10);   // Row: 1 Bank : 2
+	env2.driv2.burst_write(3,12'h001,2'b11);   // Row: 1 Bank : 3
 	env2.mon.burst_read();  
 	env2.mon.burst_read();  
 	env2.mon.burst_read();  
@@ -140,13 +141,13 @@ program test(interface_sdrc intf);
 	env2.mon.burst_read();  
 	env2.mon.burst_read();  
 	env2.driv2.burst_write(3,12'h010,2'b00);   // Row: 2 Bank : 0
-	env2.driv2.burst_write(3,12'h010,2'b00);   // Row: 2 Bank : 1
-	env2.driv2.burst_write(3,12'h010,2'b00);   // Row: 2 Bank : 2
-	env2.driv2.burst_write(3,12'h010,2'b00);   // Row: 2 Bank : 3
-	env2.driv2.burst_write(3,12'h010,2'b00);   // Row: 3 Bank : 0
-	env2.driv2.burst_write(3,12'h010,2'b00);   // Row: 3 Bank : 1
-	env2.driv2.burst_write(3,12'h010,2'b00);   // Row: 3 Bank : 2
-	env2.driv2.burst_write(3,12'h010,2'b00);   // Row: 3 Bank : 3
+	env2.driv2.burst_write(3,12'h010,2'b01);   // Row: 2 Bank : 1
+	env2.driv2.burst_write(3,12'h010,2'b10);   // Row: 2 Bank : 2
+	env2.driv2.burst_write(3,12'h010,2'b11);   // Row: 2 Bank : 3
+	env2.driv2.burst_write(3,12'h011,2'b00);   // Row: 3 Bank : 0
+	env2.driv2.burst_write(3,12'h011,2'b01);   // Row: 3 Bank : 1
+	env2.driv2.burst_write(3,12'h011,2'b10);   // Row: 3 Bank : 2
+	env2.driv2.burst_write(3,12'h011,2'b11);   // Row: 3 Bank : 3
 
 	env2.mon.burst_read();  
 	env2.mon.burst_read();  
@@ -156,14 +157,14 @@ program test(interface_sdrc intf);
 	env2.mon.burst_read();  
 	env2.mon.burst_read();  
 	env2.mon.burst_read();  
-	env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 2 Bank : 0
-	env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 2 Bank : 1
-	env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 2 Bank : 2
-	env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 2 Bank : 3
-	env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 3 Bank : 0
+	env2.driv2.burst_write(3,12'h001,2'b11);   // Row: 2 Bank : 0
+	env2.driv2.burst_write(3,12'h001,2'b10);   // Row: 2 Bank : 1
+	env2.driv2.burst_write(3,12'h001,2'b01);   // Row: 2 Bank : 2
+	env2.driv2.burst_write(3,12'h001,2'b00);   // Row: 2 Bank : 3
+	env2.driv2.burst_write(3,12'h000,2'b11);   // Row: 3 Bank : 0
 	env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 3 Bank : 1
-	env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 3 Bank : 2
-	env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 3 Bank : 3
+	env2.driv2.burst_write(3,12'h000,2'b01);   // Row: 3 Bank : 2
+	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 3 Bank : 3
 
 	env2.mon.burst_read();  
 	env2.mon.burst_read();  

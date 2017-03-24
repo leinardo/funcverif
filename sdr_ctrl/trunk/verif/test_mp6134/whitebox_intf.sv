@@ -20,7 +20,12 @@
 // Additional Comments: 
 //
 //////////////////////////////////////////////////////////////////////////////////
-Parameter TOP_PATH = sdrc_tb.UUV
+`define TOP_PATH sdrc_tb.UUV
+
+`define s_precharge (!ras && !cs && we && cas)
+`define s_autorefresh (!ras && !cas && !cs && we)
+`define s_NOP (ras && !cs && we && cas)
+
 interface whitebox_intf;
 
 // Variables	
@@ -30,24 +35,61 @@ interface whitebox_intf;
 	logic cycle;
 	logic ackowledge;
 
+	logic ras; 
+	logic cas; 
+	logic cs; 
+	logic we;
+	logic sdram_init_done;
+
 	assign clock		= `TOP_PATH.wb_clk_i;
 	assign reset		= `TOP_PATH.wb_rst_i;
 	assign strobe		= `TOP_PATH.wb_stb_i;
 	assign cycle		= `TOP_PATH.wb_cyc_i;
 	assign ackowledge	= `TOP_PATH.wb_ack_o;
 
+	assign ras 			= `TOP_PATH.sdr_ras_n;
+	assign cas 			= `TOP_PATH.sdr_cas_n;
+	assign cs 			= `TOP_PATH.sdr_cs_n;
+	assign we 			= `TOP_PATH.sdr_we_n;
+	assign sdram_init_done			= `TOP_PATH.sdr_init_done;
+
 
 // Aserciones para la inicialización de la SDRAM
+
+	property sdram_autorefresh;
+		@(posedge clock) `s_autorefresh |-> not ## [1:6] `s_autorefresh;
+	endproperty
+
+	a_autorefresh: assert property (sdram_autorefresh) else $error("%m: Violation too early autorefresh.");
+
+
+	property sdram_precharge;
+		@(posedge clock) `s_precharge |-> not ## [1:2] `s_precharge;
+	endproperty
+
+	a_precharge: assert property (sdram_precharge) else $error("%m: Violation precharge fail.");
+
+	property sdram_init;
+		@(posedge clock) $fell (sdram_init_done) |-> ## 10000  (~sdram_init_done);
+	endproperty
+
+	a_init: assert property (sdram_init) else $error("%m: Violation inicialization time.");
+
+	property sdram_NOP;
+		@(posedge clock) $fell (sdram_init_done) |-> ## 10000 `s_NOP;
+	endproperty
+
+	a_NOP: assert property (sdram_NOP) else $error("%m: Violation at NOP command time.");
 
 
 // Aserciones para las reglas del protocolo wishbone
 
 // 3.00: Todas las señales deben inicializarce (adquirir valor igual a cero) luego que el reset sea asertado.
 	property reiniciar;
-		@(posedge clock) reset |-> ##[1] (cycle == 0 & strobe == 0);
+		@(posedge clock) reset |-> ## 1 (cycle == 0 & strobe == 0);
 	endproperty
 
-	aResetP: assert property (reiniciar) else $error("%m: Violation of Wishbone Rule_3.00: cyc and stb not reestablished when rst is.")
+	aResetP: assert property (reiniciar) else $error("%m: Violation of Wishbone Rule_3.00: cyc and stb not reestablished when rst is.");
 
 // 3.05: La señal de reset debe permanecer en alto por lo menos por un ciclo completo de reloj
 	property tim_reset;
@@ -61,7 +103,7 @@ interface whitebox_intf;
 		@(posedge clock) ~strobe |-> ( ackowledge == 0 );
 	endproperty
 	
-	aRstReactP: assert (reset_react) else $error("%m Violation of Wishbone Rule_3.10: ack did't react to the rst");;
+	aRstReactP: assert property (reset_react) else $error("%m Violation of Wishbone Rule_3.10: ack didn't react to the rst");
 
 // 3.25: La señal CYC debe asertarce siempre que STB sea asertada.
 	property cyc_stb;
