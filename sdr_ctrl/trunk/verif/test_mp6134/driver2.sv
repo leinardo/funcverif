@@ -86,7 +86,8 @@ task burst_write(int Sel_Estimulo, bit [31:0] parametro1, parametro2);
 		if (Sel_Estimulo == 2)begin
 			estim2.randomize();
 			Address = estim2.Addr_write;
-			bl = estim2.bl;
+			bl = 4096 - Address[11:0];
+			$display("BBBB-Valor bl: %x",bl);
 			$display("AAAAAAAAAAAAA______ Address: %x  Bl: %x  ",Address,bl);
 
 
