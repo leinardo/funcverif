@@ -66,6 +66,13 @@ task burst_write(int Sel_Estimulo, bit [31:0] parametro1, parametro2);
 	reg [7:0] bl;
 	int i;
 	begin
+		if(Sel_Estimulo == 0) begin
+			Address = parametro1;
+			bl = parametro2[1:0];
+			$display("++++++++++++++______ Address: %x  Bl: %x  ",Address,bl);
+
+
+		end
 		if (Sel_Estimulo == 1) begin
 			estim1 = new();
 			estim1.parametro1 = parametro1;
