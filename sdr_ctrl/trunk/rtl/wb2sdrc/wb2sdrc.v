@@ -236,23 +236,24 @@ end
 		                sdr_req_addr}     )
      );
 
-// synopsys translate_off
 
 `ifdef ASSERT_ON
+  // synopsys translate_on
 
   //Asertions
     property cmd_fifo_write_overflow;
-      @(posedge wb_clk_i) not (cmdfifo_full == 1'b1 && cmdfifo_wr == 1'b1);
+      @(posedge wb_clk_i) (cmdfifo_full == 1'b1 && cmdfifo_wr == 1'b1);
     endproperty
       
     property cmd_fifo_read_overflow;
-      @(posedge sdram_clk) not (cmdfifo_empty == 1'b1 && cmdfifo_rd == 1'b1);
+      @(posedge sdram_clk) (cmdfifo_empty == 1'b1 && cmdfifo_rd == 1'b1);
     endproperty
 
-    cmdWovfP : assert property (cmd_fifo_write_overflow) else $display("ERROR:%m COMMAND FIFO WRITE OVERFLOW");
-    cmdRovfP : assert property (cmd_fifo_read_overflow) else $display("ERROR:%m COMMAND FIFO READ OVERFLOW");
+    cmdWovfP : assert property (cmd_fifo_write_overflow) $display("ERROR:%m COMMAND FIFO WRITE OVERFLOW");
+    cmdRovfP : assert property (cmd_fifo_read_overflow) $display("ERROR:%m COMMAND FIFO READ OVERFLOW");
   
 `else
+  // synopsys translate_off
   always @(posedge wb_clk_i) begin
     if (cmdfifo_full == 1'b1 && cmdfifo_wr == 1'b1)  begin
        $display("ERROR:%m COMMAND FIFO WRITE OVERFLOW");
@@ -265,8 +266,6 @@ end
      end
   end 
 `endif 
-
-// synopsys translate_on
 
 //---------------------------------------------------------------------
 // Write Data FIFO Write Generation, when ever Acked + Write Request
@@ -309,24 +308,23 @@ wire  wrdatafifo_rd  = sdr_wr_next;
           .rd_data            ({sdr_wr_en_n,
                                 sdr_wr_data}      )
      );
-
-// synopsys translate_off
-
 `ifdef ASSERT_ON
+  // synopsys translate_on
 
   //Asertions
     property write_data_fifo_write_overflow;
-      @(posedge wb_clk_i) not (wrdatafifo_full == 1'b1 && wrdatafifo_wr == 1'b1);
+      @(posedge wb_clk_i) (wrdatafifo_full == 1'b1 && wrdatafifo_wr == 1'b1);
     endproperty
       
     property write_data_fifo_read_overflow;
-      @(posedge sdram_clk) not (wrdatafifo_empty == 1'b1 && wrdatafifo_rd == 1'b1);
+      @(posedge sdram_clk) (wrdatafifo_empty == 1'b1 && wrdatafifo_rd == 1'b1);
     endproperty
 
-    wdfWovfP : assert property (write_data_fifo_write_overflow) else $display("ERROR:%m WRITE DATA FIFO WRITE OVERFLOW");
-    wdfRovfP : assert property (write_data_fifo_read_overflow) else $display("ERROR:%m WRITE DATA FIFO READ OVERFLOW");
+    wdfWovfP : assert property (write_data_fifo_write_overflow) $display("ERROR:%m WRITE DATA FIFO WRITE OVERFLOW");
+    wdfRovfP : assert property (write_data_fifo_read_overflow) $display("ERROR:%m WRITE DATA FIFO READ OVERFLOW");
 
 `else
+  // synopsys translate_off
   always @(posedge wb_clk_i) begin
     if (wrdatafifo_full == 1'b1 && wrdatafifo_wr == 1'b1)  begin
        $display("ERROR:%m WRITE DATA FIFO WRITE OVERFLOW");
@@ -339,8 +337,6 @@ wire  wrdatafifo_rd  = sdr_wr_next;
      end
   end
 `endif 
-
-// synopsys translate_on
 
 // -------------------------------------------------------------------
 //  READ DATA FIFO
@@ -389,22 +385,23 @@ wire    rddatafifo_rd = wb_ack_o & !wb_we_i;
                                 wb_dat_o}         )
      );
 
-// synopsys translate_off
 `ifdef ASSERT_ON 
+// synopsys translate_on
 
   //Asertions
     property read_data_fifo_write_overflow;
-      @(posedge wb_clk_i) not (rddatafifo_full == 1'b1 && rddatafifo_wr == 1'b1);
+      @(posedge wb_clk_i) (rddatafifo_full == 1'b1 && rddatafifo_wr == 1'b1);
     endproperty
       
     property read_data_fifo_read_overflow;
-      @(posedge sdram_clk) not (rddatafifo_empty == 1'b1 && rddatafifo_rd == 1'b1);
+      @(posedge sdram_clk) (rddatafifo_empty == 1'b1 && rddatafifo_rd == 1'b1);
     endproperty
 
-    rdfWovfP : assert property (write_data_fifo_write_overflow) else $display("ERROR:%m READ DATA FIFO WRITE OVERFLOW");
-    rdfRovfP : assert property (write_data_fifo_read_overflow) else $display("ERROR:%m READ DATA FIFO READ OVERFLOW");
+    rdfWovfP : assert property (write_data_fifo_write_overflow) $display("ERROR:%m READ DATA FIFO WRITE OVERFLOW");
+    rdfRovfP : assert property (write_data_fifo_read_overflow) $display("ERROR:%m READ DATA FIFO READ OVERFLOW");
 
 `elsif 
+// synopsys translate_off
   always @(posedge sdram_clk) begin
     if (rddatafifo_full == 1'b1 && rddatafifo_wr == 1'b1)  begin
        $display("ERROR:%m READ DATA FIFO WRITE OVERFLOW");
@@ -417,6 +414,5 @@ wire    rddatafifo_rd = wb_ack_o & !wb_we_i;
      end
   end 
 `endif
-// synopsys translate_on
 
 endmodule
