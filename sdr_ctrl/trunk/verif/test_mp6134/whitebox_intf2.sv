@@ -123,7 +123,7 @@ interface whitebox_intf;
 // Asercion para la programabilidad de la latencia del CAS
 	
 	property laten_cas;
-		@(posedge clock) `latencia |-> ## 1 (`TOP_PATH.cfg_sdf_cas == `TOP_PATH.u_sdrc_core.u_xfr_ctl.mgmt_addr[6:4]);
+		@(posedge clock) `latencia |-> ## 1 (`TOP_PATH.cfg_sdr_cas == `TOP_PATH.u_sdrc_core.u_xfr_ctl.mgmt_addr[6:4]);
 	endproperty
 
 	aLATCAS: assert property (laten_cas) else $error("%m: CAS latency has not been programmed!.");
