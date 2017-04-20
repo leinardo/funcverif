@@ -23,7 +23,7 @@
 `include "test.sv"
 `include "interface_sdrc.sv"
 `include "clk.sv"
-`include "whitebox_intf.sv"
+`include "whitebox_intf2.sv"
 module sdrc_tb;
 
 parameter ram_32 = 2'b00;
