@@ -47,12 +47,16 @@ interface whitebox_intf;
 	assign strobe		= `TOP_PATH.wb_stb_i;
 	assign cycle		= `TOP_PATH.wb_cyc_i;
 	assign ackowledge	= `TOP_PATH.wb_ack_o;
+	assign address		= `TOP_PATH.wb_addr_i;
+	assign data		= `TOP_PATH.wb_dat_o;
+	assign selector 	= `TOP_PATH.wb_sel_i;
+	assign we_w	 	= `TOP_PATH.wb_we_i;
 
 	assign ras 			= `TOP_PATH.sdr_ras_n;
 	assign cas 			= `TOP_PATH.sdr_cas_n;
 	assign cs 			= `TOP_PATH.sdr_cs_n;
 	assign we 			= `TOP_PATH.sdr_we_n;
-	assign sdram_init_done			= `TOP_PATH.sdr_init_done;
+	assign sdram_init_done		= `TOP_PATH.sdr_init_done;
 
 
 // Aserciones para la inicialización de la SDRAM
@@ -106,6 +110,22 @@ interface whitebox_intf;
 	
 	aRstReactP: assert property (reset_react) else $error("%m Violation of Wishbone Rule_3.10: ack didn't react to the rst");
 
+// 3.20: El reset sincronico responde si RST_O es acertado en el siguiente clock
+	property sync_reset;
+		@(posedge clock) reset |=> (!cycle && !strobe);
+	endproperty
+	
+	aRstBus: assert property (sync_reset) else $error("%m Violation of Wishbone Rule_3.20: bus not initialize upon reset");
+
+// Verify cycle with rsp
+
+	property cyc_when_rsp;
+		@(posedge clock) ackowledge |-> (cycle && strobe);
+	endproperty
+	
+	aCycRsP: assert property (cyc_when_rsp) else $error("%m Error in Cyc_RsP");
+
+
 // 3.25: La señal CYC debe asertarce siempre que STB sea asertada.
 	property cyc_stb;
 		@(posedge clock) strobe |-> cycle;
@@ -120,6 +140,8 @@ interface whitebox_intf;
 
 	aACSP: assert property (ack_cyc_stb) else $error("%m: Violation of Wishbone Rule_3.35: slave responding outside cycle.");
 
+// 3.45 
+
 // Asercion para la programabilidad de la latencia del CAS
 	
 	property laten_cas;
@@ -129,6 +151,24 @@ interface whitebox_intf;
 	aLATCAS: assert property (laten_cas) else $error("%m: CAS latency has not been programmed!.");
 
 // Asercion para validar el autorefresh
+
+
+// Asercion para validar que las señales del master cyc_o y stb_o no sean X o Z (Revisar)
+
+//	property cyc_std_notxz;
+//		@(posedge clock) $isunknown({cycle, strobe}) == 0;
+//	endproperty
+
+//	aCYC_STD_NOTXZ: assert property (cyc_std_notxz) else $error("%m: Cycle or Strobe is not defined");
+
+// Asercion para validar que las señales de otros masters no sean X o Z (Revisar)
+
+//	property master_notxz;
+//		@(posedge clock) strobe |-> $isunknown({address,data,selector,we_w}) == 0;
+//	endproperty
+
+//	aMASTER_NOTXZ: assert property (master_notxz) else $error("%m: Master signals is not defined");
+
 
 
 
