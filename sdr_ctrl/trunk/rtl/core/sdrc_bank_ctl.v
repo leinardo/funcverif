@@ -326,6 +326,9 @@ parameter  SDR_BW   = 2;   // SDR Byte Width
 
 		remP : assert property (read_empty_fifo) else $display ("%t: %m: ERROR!!! Read from empty Fifo", $time);
 		wrfP : assert property (write_full_fifo) else $display ("%t: %m: ERROR!!! Write to full Fifo", $time);
+
+		cremP: cover  property (read_empty_fifo) $display("%m: Read from empty Fifo Pass");
+		cwrfP: cover  property (write_full_fifo) $display("%m: Write to full Fifo Pass");
 	
 	`else
 

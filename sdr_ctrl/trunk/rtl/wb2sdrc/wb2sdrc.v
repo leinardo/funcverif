@@ -251,6 +251,9 @@ end
 
     cmdWovfP : assert property (cmd_fifo_write_overflow) else $display("ERROR:%m COMMAND FIFO WRITE OVERFLOW");
     cmdRovfP : assert property (cmd_fifo_read_overflow) else $display("ERROR:%m COMMAND FIFO READ OVERFLOW");
+
+    ccmdWovfP: cover  property (cmd_fifo_write_overflow) $display("%m: Write overflow pass");
+    ccmdRovfP: cover  property (cmd_fifo_read_overflow) $display("%m: Read overflow pass");
   
 `else
   always @(posedge wb_clk_i) begin
@@ -325,6 +328,9 @@ wire  wrdatafifo_rd  = sdr_wr_next;
 
     wdfWovfP : assert property (write_data_fifo_write_overflow) else $display("ERROR:%m WRITE DATA FIFO WRITE OVERFLOW");
     wdfRovfP : assert property (write_data_fifo_read_overflow) else $display("ERROR:%m WRITE DATA FIFO READ OVERFLOW");
+
+    cwdfWovfP: cover  property (write_data_fifo_write_overflow) $display("%m: Write fifo overflow pass");
+    cwdfRovfP: cover  property (write_data_fifo_read_overflow) $display("%m: Read fifo overflow pass");
 
 `else
   always @(posedge wb_clk_i) begin
@@ -403,6 +409,9 @@ wire    rddatafifo_rd = wb_ack_o & !wb_we_i;
 
     rdfWovfP : assert property (write_data_fifo_write_overflow) else $display("ERROR:%m READ DATA FIFO WRITE OVERFLOW");
     rdfRovfP : assert property (write_data_fifo_read_overflow) else $display("ERROR:%m READ DATA FIFO READ OVERFLOW");
+
+    crdfWovfP: cover  property (write_data_fifo_write_overflow) $display("%m: Write data and write fifo overflow pass");
+    crdfRovfP: cover  property (write_data_fifo_read_overflow) $display("%m: Write data and read fifo overflow pass");
 
 `elsif 
   always @(posedge sdram_clk) begin

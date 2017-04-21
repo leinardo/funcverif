@@ -320,6 +320,9 @@ endfunction
 	afoP : assert property (afifo_overflow) else $display($time, "%m Error! afifo overflow!");
 	afuP : assert property (afifo_underflow) else $display($time, "%m error! afifo underflow!");
 
+	cfoP: cover  property (afifo_overflow) $display("%m: Fifo overflow pass");
+	cfuP: cover  property (afifo_underflow) $display("%m: Fifo underflow pass");
+
 	
 `else
 	always @(posedge wr_clk) begin

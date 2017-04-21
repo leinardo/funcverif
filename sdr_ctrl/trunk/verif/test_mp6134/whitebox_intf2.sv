@@ -66,26 +66,28 @@ interface whitebox_intf;
 	endproperty
 
 	a_autorefresh: assert property (sdram_autorefresh) else $error("%m: Violation too early autorefresh.");
-
+	c_autorefresh: cover  property (sdram_autorefresh) $display("%m: Autorefresh Pass");
 
 	property sdram_precharge;
 		@(posedge clock) `s_precharge |-> not ## [1:2] `s_precharge;
 	endproperty
 
 	a_precharge: assert property (sdram_precharge) else $error("%m: Violation precharge fail.");
+	c_precharge: cover  property (sdram_precharge) $display("%m: Precharge Pass");
 
 	property sdram_init;
 		@(posedge clock) $fell (sdram_init_done) |-> ## 10000  (~sdram_init_done);
 	endproperty
 
 	a_init: assert property (sdram_init) else $error("%m: Violation inicialization time.");
+	c_init: cover  property (sdram_init) $display("%m: SDRAM INIT Pass");
 
 	property sdram_NOP;
 		@(posedge clock) $fell (sdram_init_done) |-> ## 10000 `s_NOP;
 	endproperty
 
 	a_NOP: assert property (sdram_NOP) else $error("%m: Violation at NOP command time.");
-
+	c_NOP: cover  property (sdram_NOP) $display("%m: SRAM NOP Pass");
 
 // Aserciones para las reglas del protocolo wishbone
 
@@ -95,6 +97,7 @@ interface whitebox_intf;
 	endproperty
 
 	aResetP: assert property (reiniciar) else $error("%m: Violation of Wishbone Rule_3.00: cyc and stb not reestablished when rst is.");
+	cResetP: cover  property (reiniciar) $display("%m: Reiniciar Pass");
 
 // 3.05: La señal de reset debe permanecer en alto por lo menos por un ciclo completo de reloj
 	property tim_reset;
@@ -102,6 +105,7 @@ interface whitebox_intf;
 	endproperty
 
 	aTimeResetP : assert property (tim_reset) else $error("%m Violation of Wishbone Rule_3.05: rst didn't asserted for at leasr one complete clk cicle");
+	cTimeResetP: cover  property (tim_reset) $display("%m: Time Reset Pass");
 
 // 3.10: Todas las señales deben de ser capaz de reaccionar al reset en cualquier momento
 	property reset_react;
@@ -109,6 +113,7 @@ interface whitebox_intf;
 	endproperty
 	
 	aRstReactP: assert property (reset_react) else $error("%m Violation of Wishbone Rule_3.10: ack didn't react to the rst");
+	cRstReactP: cover  property (reset_react) $display("%m: Reset Pass");
 
 // 3.20: El reset sincronico responde si RST_O es acertado en el siguiente clock
 	property sync_reset;
@@ -116,6 +121,7 @@ interface whitebox_intf;
 	endproperty
 	
 	aRstBus: assert property (sync_reset) else $error("%m Violation of Wishbone Rule_3.20: bus not initialize upon reset");
+	cRstBus: cover  property (sync_reset) $display("%m: Sync reset Pass");
 
 // Verify cycle with rsp
 
@@ -124,7 +130,7 @@ interface whitebox_intf;
 	endproperty
 	
 	aCycRsP: assert property (cyc_when_rsp) else $error("%m Error in Cyc_RsP");
-
+	cCycRsP: cover  property (cyc_when_rsp) $display("%m: Cycle with Rsp Pass");
 
 // 3.25: La señal CYC debe asertarce siempre que STB sea asertada.
 	property cyc_stb;
@@ -132,6 +138,7 @@ interface whitebox_intf;
 	endproperty
 
 	aCSP: assert property (cyc_stb) else $error("%m: Violation of Wishbone Rule_3.25: cyc not asserted when stb is.");
+	cCSP: cover  property (cyc_stb) $display("%m: Asser CYC and STB Pass");
 
 // 3.35: La señal ACK no debe responder a menos que CYC and STB hayan sido asertadas
 	property ack_cyc_stb;
@@ -139,6 +146,7 @@ interface whitebox_intf;
 	endproperty
 
 	aACSP: assert property (ack_cyc_stb) else $error("%m: Violation of Wishbone Rule_3.35: slave responding outside cycle.");
+	cACSP: cover  property (ack_cyc_stb) $display("%m: ACK.CYC amd STB Pass");
 
 // 3.45 
 
@@ -149,6 +157,7 @@ interface whitebox_intf;
 	endproperty
 
 	aLATCAS: assert property (laten_cas) else $error("%m: CAS latency has not been programmed!.");
+	cLATCAS: cover  property (laten_cas) $display("%m: Programmable CAS pass");
 
 // Asercion para validar el autorefresh
 
