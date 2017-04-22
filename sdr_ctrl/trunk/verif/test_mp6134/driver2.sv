@@ -32,6 +32,24 @@ scoreboard score;
 estimulo1 estim1;
 estimulo2 estim2;
 estimulo3 estim3;
+
+covergroup driver_group @ (posedge mem_vif.wb_clk);
+		Direcciones : coverpoint  `DRIV_IF.wb_addr [11:0] {
+			bins addr_cero    = {12'h000,12'h199};
+    		bins addr_uno     = {12'h19A,12'h333};
+ 	   		bins addr_dos     = {12'h334,12'h4CD};
+ 	   		bins addr_tres    = {12'h4CE,12'h667};
+    		bins addr_cuatro  = {12'H668,12'h801};
+ 	   		bins addr_cinco   = {12'h802,12'h99B};
+			bins addr_seis    = {12'h99C,12'hB35};
+    		bins addr_siete   = {12'hB36,12'hCCF};
+ 	   		bins addr_ocho    = {12'hCD0,12'hE69};
+			bins addr_nueve   = {12'hE6A,12'hFFF};
+		}
+		
+	endgroup // driver_group
+    
+
 //constructor
 function new(virtual interface_sdrc mem_vif,scoreboard score, estimulo1 estim1, estimulo2 estim2, estimulo3 estim3);
     //get the interface from test
@@ -40,7 +58,9 @@ function new(virtual interface_sdrc mem_vif,scoreboard score, estimulo1 estim1, 
     this.estim1 = estim1;
     this.estim2 = estim2;
     this.estim3 = estim3;
+    this.driver_group = new ();
 endfunction : new
+
 
 //funciones y tareas
 task reset;
@@ -65,6 +85,7 @@ task burst_write(int Sel_Estimulo, bit [31:0] parametro1, parametro2);
 	reg [31:0] Address;
 	reg [7:0] bl;
 	int i;
+
 	begin
 		if(Sel_Estimulo == 0) begin
 			Address = parametro1;

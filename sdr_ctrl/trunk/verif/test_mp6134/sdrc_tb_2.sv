@@ -171,4 +171,20 @@ test t1(intf);
        );
 
 `endif
+
+  covergroup data_with @ (posedge sys_clk);
+    Data_lg_8 : coverpoint  ( (dq & 8'hFF) == dq  && intf.SDR_DW == 8)  {
+        bins long_8       = {1};
+    }
+    Data_lg_16 : coverpoint  ((dq & 16'hFFFF) == dq  && intf.SDR_DW == 16) {
+        bins long_16      = {1};
+    }
+    Data_lg_32 : coverpoint  ((dq & 32'hFFFF_FFFF) == dq && intf.SDR_DW == 32) {
+        bins long_32      = {1};
+
+    }
+    
+  endgroup // driver_group
+  data_with data_w_ = new ();
+
 endmodule // sdrc_tb

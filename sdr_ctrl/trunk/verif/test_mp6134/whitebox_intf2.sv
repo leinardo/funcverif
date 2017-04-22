@@ -27,6 +27,10 @@
 `define s_NOP (ras && !cs && we && cas)
 `define latencia (!ras && !cas && !cs && !we)
 
+
+
+
+
 interface whitebox_intf;
 
 // Variables	
@@ -58,8 +62,29 @@ interface whitebox_intf;
 	assign we 			= `TOP_PATH.sdr_we_n;
 	assign sdram_init_done		= `TOP_PATH.sdr_init_done;
 
+	covergroup wishbone_group @ (posedge clock);
+		s_precharge_point : coverpoint `s_precharge {
+			bins s_p_no_acerto = {0};
+			bins s_p_acerto    = {1};
+		}
+		s_autorefresh_point : coverpoint `s_autorefresh{
+			bins s_a_no_acerto = {0};
+			bins s_a_acerto    = {1}; 
+
+		}
+		s_NOP_point : coverpoint `s_NOP {
+			bins s_N_no_acerto = {0};
+			bins s_N_acerto    = {1};
+		}
+		latencia_point : coverpoint `latencia{
+			bins l_no_acerto = {0};
+			bins l_acerto    = {1}; 
+
+		}
+	endgroup // wishbone_group
 
 // Aserciones para la inicialización de la SDRAM
+	wishbone_group wish_g = new ();
 
 	property sdram_autorefresh;
 		@(posedge clock) `s_autorefresh |-> not ## [1:6] `s_autorefresh;
