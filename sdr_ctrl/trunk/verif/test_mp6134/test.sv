@@ -34,6 +34,7 @@ program test(interface_sdrc intf);
     wait(UUV.sdr_init_done == 1);
     //var = 1;
     //#100000 var=0;
+
     #1000;
 	$display("-------------------------------------- ");
 	$display(" Case-1: Single Write/Read Case        ");
@@ -188,25 +189,62 @@ program test(interface_sdrc intf);
 	env2.mon.burst_read();  
 	env2.mon.burst_read(); 
 	
-/*	$display("---------------------------------------------------");
-	$display(" Case: 6 Random 2 write and 2 read random");
 	$display("---------------------------------------------------");
-	for(k=0; k < 20; k++) begin
-	    StartAddr = $random & 32'h003FFFFF;
-	    env2.driv2.burst_write(1);  
-		#100;
+	$display(" Case: 6 Bank");
+	$display("---------------------------------------------------");
+	for(k=0; k < 5; k++) begin
+		env2.driv2.burst_write(4,1,2'b00);  
+		env2.mon.burst_read();
+		 #100;  
+		env2.driv2.burst_write(4,1,2'b01);  
+		env2.mon.burst_read();
+		 #100; 
+		env2.driv2.burst_write(4,1,2'b10);  
+		env2.mon.burst_read();
+		 #100;  
+		env2.driv2.burst_write(4,1,2'b11);  
+		env2.mon.burst_read(); 
+	end 
 
-	    StartAddr = $random & 32'h003FFFFF;
-	    env2.driv2.burst_write(1);  
-		#100;
-	    env2.mon.burst_read();  
-		#100;
-	    env2.mon.burst_read();  
-		#100;
-	    end*/
+
+	$display("---------------------------------------------------");
+	$display(" Case: 7 Row");
+	$display("---------------------------------------------------");
+
+	for(k=0; k < 2; k++) begin
+		env2.driv2.burst_write(5,1,1);  
+		env2.mon.burst_read();
+		 #100;  
+		 env2.driv2.burst_write(5,1,2);  
+		env2.mon.burst_read();
+		 #100; 
+		 env2.driv2.burst_write(5,1,3);  
+		env2.mon.burst_read();
+		 #100; 
+		 env2.driv2.burst_write(5,1,4);  
+		env2.mon.burst_read();
+		 #100; 
+		 env2.driv2.burst_write(5,1,5);  
+		env2.mon.burst_read();
+		 #100; 
+		 env2.driv2.burst_write(5,1,6);  
+		env2.mon.burst_read();
+		 #100; 
+		 env2.driv2.burst_write(5,1,7);  
+		env2.mon.burst_read();
+		 #100; 
+		 env2.driv2.burst_write(5,1,8);  
+		env2.mon.burst_read();
+		 #100; 
+	end 
+
+
 
 		#10000;
 		env2.mon.error_report();
+
+
+
 
 	    $finish;
 	end

@@ -25,12 +25,17 @@
 `include "estimulo1.sv"
 `include "estimulo2.sv"
 `include "estimulo3.sv"
+`include "estimulo4.sv"
+`include "estimulo5.sv"
 `include "driver2.sv"
+
 
 class environment2 extends environment;
 	estimulo1 est1;
 	estimulo2 est2;
 	estimulo3 est3;
+	estimulo4 est4;
+	estimulo5 est5;
 	driver2 driv2;
 
 	//Creando la interfaz virtual para el manejo de memoria
@@ -41,7 +46,9 @@ class environment2 extends environment;
 	    est1 = new();
 	    est2 = new();
 	    est3 = new();
-	    driv2 = new(mem_vif, score1, est1, est2, est3);
+	    est4 = new();
+	    est5 = new();
+	    driv2 = new(mem_vif, score1, est1, est2, est3, est4, est5);
 	endfunction : new
 
 endclass : environment2

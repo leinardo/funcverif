@@ -35,7 +35,7 @@ class estimulo3;
 		//bank <= 2'b11;
 		//bank >= 2'b00;
 		colum >= 8'h00;
-		colum <= 8'h07;
+		colum <= 8'hff;
 		cfg_col <= 2'b00;
 		cfg_col >= 2'b00;
 

@@ -32,33 +32,83 @@ scoreboard score;
 estimulo1 estim1;
 estimulo2 estim2;
 estimulo3 estim3;
+estimulo4 estim4;
+estimulo5 estim5;
+reg [31:0] Address;
 
-covergroup driver_group @ (posedge mem_vif.wb_clk);
-		Direcciones : coverpoint  `DRIV_IF.wb_addr [11:0] {
-			bins addr_cero    = {12'h000,12'h199};
-    		bins addr_uno     = {12'h19A,12'h333};
- 	   		bins addr_dos     = {12'h334,12'h4CD};
- 	   		bins addr_tres    = {12'h4CE,12'h667};
-    		bins addr_cuatro  = {12'H668,12'h801};
- 	   		bins addr_cinco   = {12'h802,12'h99B};
-			bins addr_seis    = {12'h99C,12'hB35};
-    		bins addr_siete   = {12'hB36,12'hCCF};
- 	   		bins addr_ocho    = {12'hCD0,12'hE69};
-			bins addr_nueve   = {12'hE6A,12'hFFF};
+covergroup column_group @ (posedge mem_vif.wb_clk);
+		seleccion_column_1 : coverpoint (Address[9:2] <= 31) {
+			bins column_1    = {1};
+
 		}
+		seleccion_column_2 : coverpoint (Address[9:2] > 31 && Address[9:2] < 64) {
+			bins column_2    = {1};
+
+		}
+		seleccion_column_3 : coverpoint (Address[9:2] > 63 && Address[9:2] < 96) {
+			bins column_3    = {1};
+
+		}
+		seleccion_column_4 : coverpoint (Address[9:2] > 95 && Address[9:2] < 128) {
+			bins column_4    = {1};
+
+		}
+		seleccion_column_5 : coverpoint (Address[9:2] > 127 && Address[9:2] < 160) {
+			bins column_5    = {1};
+
+		}
+		seleccion_column_6 : coverpoint (Address[9:2] > 159 && Address[9:2] < 192) {
+			bins column_6    = {1};
+
+		}
+		seleccion_column_7 : coverpoint (Address[9:2] > 191 && Address[9:2] < 224) {
+			bins column_7    = {1};
+
+		}
+		seleccion_column_8 : coverpoint (Address[9:2] > 223 && Address[9:2] < 256) {
+			bins column_8    = {1};
+
+		}
+
+		seleccion_column_xx : coverpoint (Address[9:2] < 256) {
+			bins column_uno    = {0,32};
+			bins column_dos	   = {33,255};
+
+		}
+
 		
-	endgroup // driver_group
+	endgroup // row_group
+
+covergroup bank_group @ (posedge mem_vif.wb_clk);
+		seleccion_banco_1 : coverpoint (Address[11:10] == 2'b00) {
+			bins bank_uno    = {1};
+		}
+		seleccion_banco_2 : coverpoint (Address[11:10] == 2'b01) {
+			bins bank_dos    = {1};
+		}
+		seleccion_banco_3 : coverpoint (Address[11:10] == 2'b10) {
+			bins bank_tres    = {1};
+		}
+		seleccion_banco_4 : coverpoint (Address[11:10] == 2'b11) {
+			bins bank_cuatro    = {1};
+		}
+
+		
+	endgroup // bank_group
     
 
 //constructor
-function new(virtual interface_sdrc mem_vif,scoreboard score, estimulo1 estim1, estimulo2 estim2, estimulo3 estim3);
+function new(virtual interface_sdrc mem_vif,scoreboard score, estimulo1 estim1, estimulo2 estim2, estimulo3 estim3, estimulo4 estim4, estimulo5 estim5);
     //get the interface from test
     this.mem_vif = mem_vif;
-    this.score = score;
-    this.estim1 = estim1;
-    this.estim2 = estim2;
-    this.estim3 = estim3;
-    this.driver_group = new ();
+    this.score   = score;
+    this.estim1  = estim1;
+    this.estim2  = estim2;
+    this.estim3  = estim3;
+    this.estim4  = estim4;
+    this.estim5  = estim5;
+    this.bank_group = new ();
+    this.column_group = new ();
 endfunction : new
 
 
@@ -82,14 +132,16 @@ task reset;
 endtask
 
 task burst_write(int Sel_Estimulo, bit [31:0] parametro1, parametro2);
-	reg [31:0] Address;
+	
 	reg [7:0] bl;
 	int i;
+	reg [7:0] result_estim5_column;
 
 	begin
 		if(Sel_Estimulo == 0) begin
 			Address = parametro1;
 			bl = parametro2[1:0];
+
 			$display("++++++++++++++______ Address: %x  Bl: %x  ",Address,bl);
 
 
@@ -124,6 +176,48 @@ task burst_write(int Sel_Estimulo, bit [31:0] parametro1, parametro2);
 
 
 		end
+		if(Sel_Estimulo == 4) begin
+			estim4 = new();
+			//estim3.row = parametro1 [11:0];
+			//estim3.bank = parametro2 [1:0];
+			estim4.randomize();
+			Address = {estim4.row,parametro2[1:0], estim4.colum, estim4.cfg_col};
+			bl = estim4.bl;
+			$display("BBBBBBBBBBBBB______ Address: %x  Bl: %x  ",Address,bl);
+
+
+		end
+
+		if(Sel_Estimulo == 5) begin
+			estim5 = new();
+			//estim3.row = parametro1 [11:0];
+			//estim3.bank = parametro2 [1:0];
+			estim5.randomize();
+			if (parametro2 == 1)
+			result_estim5_column = estim5.colum1;
+			if (parametro2 == 2)
+			result_estim5_column = estim5.colum2;
+			if (parametro2 == 3)
+			result_estim5_column = estim5.colum3;
+			if (parametro2 == 4)
+			result_estim5_column = estim5.colum4;
+			if (parametro2 == 5)
+			result_estim5_column = estim5.colum5;
+			if (parametro2 == 6)
+			result_estim5_column = estim5.colum6;
+			if (parametro2 == 7)
+			result_estim5_column = estim5.colum7;
+			if (parametro2 == 8)
+			result_estim5_column = estim5.colum8;
+
+
+			Address = {estim5.row,estim5.bank, result_estim5_column , estim5.cfg_col};
+			bl = estim5.bl;
+			$display("CCCCCCCCCCCCC______ Address: %x  Bl: %x  ",Address,bl);
+
+
+		end
+			
 			
 
 		score.bl_fifo.push_back(bl);
