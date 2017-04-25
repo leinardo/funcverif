@@ -101,18 +101,18 @@ interface whitebox_intf;
 	c_precharge: cover  property (sdram_precharge) $display("%m: Precharge Pass");
 
 	property sdram_init;
-		@(posedge clock) $fell (sdram_init_done) |-> ## 10000  (~sdram_init_done && `s_NOP);
+		@(posedge clock) $fell (sdram_init_done) |-> ## 1000  (~sdram_init_done /*&& `s_NOP*/);
 	endproperty
 
 	a_init: assert property (sdram_init) else $error("%m: Violation inicialization time.");
 	c_init: cover  property (sdram_init) $display("%m: SDRAM INIT Pass");
 
-	/*property sdram_NOP;
-		@(posedge clock) $fell (sdram_init_done) |-> ## 10000 `s_NOP;
+	property sdram_NOP;
+		@(posedge clock) $fell (sdram_init_done) |-> ## 1000 `s_NOP;
 	endproperty
 
 	a_NOP: assert property (sdram_NOP) else $error("%m: Violation at NOP command time.");
-	c_NOP: cover  property (sdram_NOP) $display("%m: SRAM NOP Pass");*/
+	c_NOP: cover  property (sdram_NOP) $display("%m: SRAM NOP Pass");
 
 // Aserciones para las reglas del protocolo wishbone
 
