@@ -56,6 +56,7 @@ wire  sdr_dqm;
 wire  [1:0] sdr_ba;
 wire  [12:0] sdr_addr;
 wire  [intf.SDR_DW-1:0] dq;
+reg   [2:0] variable = 3'h3;
 
 wire #(2.0) sdram_clk_d   = sdram_clk;
 
@@ -107,7 +108,7 @@ test t1(intf);
         .cfg_sdr_tras_d(4'h4),
         .cfg_sdr_trp_d(4'h2),
         .cfg_sdr_trcd_d(4'h2),
-        .cfg_sdr_cas(3'h3),
+        .cfg_sdr_cas(variable),
         .cfg_sdr_trcar_d(4'h7),
         .cfg_sdr_twr_d(4'h1),
         .cfg_sdr_rfsh(12'h100), 		// reduced from 12'hC35

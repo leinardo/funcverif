@@ -237,14 +237,38 @@ program test(interface_sdrc intf);
 		env2.mon.burst_read();
 		 #100; 
 	end 
-
-
+	
+	`ifdef SDR_32BIT
+	$display("---------------------------------------------------");
+	$display(" Case: 8 CAS LATENCY");
+	$display("---------------------------------------------------");
+		
+        sdrc_tb.variable=3'h2;
+        env2.driv2.reset();
+    	wait(UUV.sdr_init_done == 1);
+    	repeat (20) begin 
+	    	env2.driv2.burst_write(3,12'h000,2'b00);   // Row: 0 Bank : 0
+			env2.driv2.burst_write(3,12'h000,2'b01);   // Row: 0 Bank : 1
+			env2.driv2.burst_write(3,12'h000,2'b10);   // Row: 0 Bank : 2
+			env2.driv2.burst_write(3,12'h000,2'b11);   // Row: 0 Bank : 3
+			env2.driv2.burst_write(3,12'h001,2'b00);   // Row: 1 Bank : 0
+			env2.driv2.burst_write(3,12'h001,2'b01);   // Row: 1 Bank : 1
+			env2.driv2.burst_write(3,12'h001,2'b10);   // Row: 1 Bank : 2
+			env2.driv2.burst_write(3,12'h001,2'b11);   // Row: 1 Bank : 3
+			env2.mon.burst_read();  
+			env2.mon.burst_read();  
+			env2.mon.burst_read();  
+			env2.mon.burst_read();  
+			env2.mon.burst_read();  
+			env2.mon.burst_read();  
+			env2.mon.burst_read();  
+			env2.mon.burst_read();
+		end
+	`endif
+		
 
 		#10000;
 		env2.mon.error_report();
-
-
-
 
 	    $finish;
 	end

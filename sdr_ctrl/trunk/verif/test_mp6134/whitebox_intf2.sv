@@ -26,9 +26,7 @@
 `define s_autorefresh (!ras && !cas && !cs && we)
 `define s_NOP (ras && !cs && we && cas)
 `define latencia (!ras && !cas && !cs && !we)
-
-
-
+`define latencia_v (strobe && cycle && cs && !we)
 
 
 interface whitebox_intf;
@@ -52,9 +50,9 @@ interface whitebox_intf;
 	assign cycle		= `TOP_PATH.wb_cyc_i;
 	assign ackowledge	= `TOP_PATH.wb_ack_o;
 	assign address		= `TOP_PATH.wb_addr_i;
-	assign data		= `TOP_PATH.wb_dat_o;
+	assign data			= `TOP_PATH.wb_dat_o;
 	assign selector 	= `TOP_PATH.wb_sel_i;
-	assign we_w	 	= `TOP_PATH.wb_we_i;
+	assign we_w	 		= `TOP_PATH.wb_we_i;
 
 	assign ras 			= `TOP_PATH.sdr_ras_n;
 	assign cas 			= `TOP_PATH.sdr_cas_n;
@@ -176,13 +174,22 @@ interface whitebox_intf;
 // 3.45 
 
 // Asercion para la programabilidad de la latencia del CAS
-	
-	property laten_cas;
-		@(posedge clock) `latencia |-> ## 1 (`TOP_PATH.cfg_sdr_cas == `TOP_PATH.u_sdrc_core.u_xfr_ctl.mgmt_addr[6:4]);
-	endproperty
 
-	aLATCAS: assert property (laten_cas) else $error("%m: CAS latency has not been programmed!.");
-	cLATCAS: cover  property (laten_cas) $display("%m: Programmable CAS pass");
+	`ifdef SDR_32BIT
+		property laten_cas;
+			@(posedge clock) `latencia |-> ## 1 (`TOP_PATH.cfg_sdr_cas == `TOP_PATH.u_sdrc_core.u_xfr_ctl.mgmt_addr[6:4]);
+		endproperty
+
+		aLATCAS: assert property (laten_cas) else $error("%m: CAS latency has not been programmed!.");
+		cLATCAS: cover  property (laten_cas) $display("%m: Programmable CAS pass");
+
+		property verify_laten_cas_2;
+			@(posedge clock) `latencia_v |-> ## 2 (`TOP_PATH.wb_dat_o == `TOP_PATH.sdr_dq);
+		endproperty
+
+		aLATCAS_v: assert property (verify_laten_cas_2) else $error("%m: CAS latency has not been respected!.");
+		cLATCAS_v: cover  property (verify_laten_cas_2) $display("%m: Programmable CAS pass");
+	`endif
 
 // Asercion para validar el autorefresh
 
