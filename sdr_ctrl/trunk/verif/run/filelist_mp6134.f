@@ -1,8 +1,10 @@
 +define+VERBOSE
 +incdir+/home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/core
 +incdir+/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/test_mp6134/
-/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/test_mp6134/sdrc_tb.sv
-/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/model/mt48lc8m8a2.v 
+/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/test_mp6134/sdrc_tb_2.sv
+/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/model/mt48lc8m8a2.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/model/mt48lc2m32b2.v
+/home/Verificacion/funcverif/sdr_ctrl/trunk/verif/model/IS42VM16400K.sv 
 /home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/top/sdrc_top.v
 /home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/wb2sdrc/wb2sdrc.v
 /home/Verificacion/funcverif/sdr_ctrl/trunk/rtl/lib/async_fifo.v
