@@ -79,12 +79,28 @@ interface whitebox_intf;
 			bins l_acerto    = {1}; 
 
 		}
+		reset_point : coverpoint  (reset == 1) {
+			bins reset_p = {1};
+
+		}
+		strobe_point : coverpoint  (strobe == 0) {
+			bins strobe_p = {1};
+
+		}
+		ackowledge_point : coverpoint  (ackowledge == 1) {
+			bins ackowledge_p = {1};
+
+		}
+
+
+
+
 	endgroup // wishbone_group
 
 // Aserciones para la inicialización de la SDRAM
 	wishbone_group wish_g = new ();
 
-	property sdram_autorefresh;
+	/*property sdram_autorefresh;
 		@(posedge clock) `s_autorefresh |-> not ## [1:6] `s_autorefresh;
 	endproperty
 
@@ -99,24 +115,24 @@ interface whitebox_intf;
 	c_precharge: cover  property (sdram_precharge) $display("%m: Precharge Pass");
 
 	property sdram_init;
-		@(posedge clock) $fell (sdram_init_done) |-> ## 1000  (~sdram_init_done /*&& `s_NOP*/);
+		@(posedge clock) $fell (sdram_init_done) |-> ## 1297  (~sdram_init_done) ## [0:3] `s_precharge ## [1:6] `s_autorefresh ## [1:6] `s_autorefresh;
 	endproperty
 
 	a_init: assert property (sdram_init) else $error("%m: Violation inicialization time.");
-	c_init: cover  property (sdram_init) $display("%m: SDRAM INIT Pass");
+	c_init: cover  property (sdram_init) $display("%m: SDRAM INIT Pass");*/
 
-	property sdram_NOP;
-		@(posedge clock) $fell (sdram_init_done) |-> ## 1000 `s_NOP;
+	property sdram_Inicio;
+		@(posedge clock) $fell (sdram_init_done) |-> ## [0:1297] `s_NOP ## [0:1297] (~sdram_init_done) ## [0:3] `s_precharge ## [1:6] `s_autorefresh ## [1:6] `s_autorefresh;
 	endproperty
 
-	a_NOP: assert property (sdram_NOP) else $error("%m: Violation at NOP command time.");
-	c_NOP: cover  property (sdram_NOP) $display("%m: SRAM NOP Pass");
+	a_Inicio: assert property (sdram_Inicio) else $error("%m: Violation inicialization time.");
+	c_Inicio: cover  property (sdram_Inicio) $display("%m: SDRAM INIT Pass");
 
 // Aserciones para las reglas del protocolo wishbone
 
 // 3.00: Todas las señales deben inicializarce (adquirir valor igual a cero) luego que el reset sea asertado.
 	property reiniciar;
-		@(posedge clock) reset |-> ## 1 (cycle == 0 & strobe == 0);
+		@(posedge clock) reset |-> ## 1 (cycle == 0 & strobe == 0 & UUV.sdr_addr == 0 & UUV.sdr_dq == 0);
 	endproperty
 
 	aResetP: assert property (reiniciar) else $error("%m: Violation of Wishbone Rule_3.00: cyc and stb not reestablished when rst is.");

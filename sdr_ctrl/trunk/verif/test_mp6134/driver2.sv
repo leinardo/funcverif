@@ -68,15 +68,7 @@ covergroup column_group @ (posedge mem_vif.wb_clk);
 		seleccion_column_8 : coverpoint (Address[9:2] > 223 && Address[9:2] < 256) {
 			bins column_8    = {1};
 
-		}
-
-		seleccion_column_xx : coverpoint (Address[9:2] < 256) {
-			bins column_uno    = {0,32};
-			bins column_dos	   = {33,255};
-
-		}
-
-		
+		}		
 	endgroup // row_group
 
 covergroup bank_group @ (posedge mem_vif.wb_clk);

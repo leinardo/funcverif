@@ -208,10 +208,10 @@ program test(interface_sdrc intf);
 
 
 	$display("---------------------------------------------------");
-	$display(" Case: 7 Row");
+	$display(" Case: 7 column");
 	$display("---------------------------------------------------");
 
-	for(k=0; k < 2; k++) begin
+	for(k=0; k < 5; k++) begin
 		env2.driv2.burst_write(5,1,1);  
 		env2.mon.burst_read();
 		 #100;  
@@ -238,7 +238,7 @@ program test(interface_sdrc intf);
 		 #100; 
 	end 
 	
-	`ifdef SDR_32BIT
+/*	`ifdef SDR_32BIT
 	$display("---------------------------------------------------");
 	$display(" Case: 8 CAS LATENCY");
 	$display("---------------------------------------------------");
@@ -264,7 +264,7 @@ program test(interface_sdrc intf);
 			env2.mon.burst_read();  
 			env2.mon.burst_read();
 		end
-	`endif
+	`endif*/
 		
 
 		#10000;
